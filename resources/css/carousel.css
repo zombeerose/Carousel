@@ -1,0 +1,230 @@
+/**
+ * The CSS specific to the banner rotating component.
+ */
+.dvp-carousel {
+	border: 1px dashed grey;
+	position: relative;
+}
+
+.dvp-carousel .dvp-carousel-slide {
+	height: 100%;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 0;
+}
+
+.dvp-carousel .dvp-carousel-slide img {
+	height: 100%;
+	width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-crumb-wrapper {
+	display: block;
+	height: 0;
+	position: relative;
+	text-align: center;
+}
+
+.dvp-carousel .dvp-carousel-crumb-buttons {
+	background: transparent;
+	padding: 4px;
+	top: -35px;
+	z-index: 100;
+}
+
+.dvp-carousel .dvp-carousel-crumb-buttons-pretty {
+    border: 1px solid #777;
+    border-radius: 20px;
+    
+    /* experimental */
+    /* 98E4FF */
+    background-image: -moz-linear-gradient(0deg, #BBB, #FFFFFF);
+    background-image: -ms-linear-gradient(0deg, #BBB, #FFFFFF);
+    background-image: -o-linear-gradient(0deg, #BBB, #FFFFFF);
+    background-image: -webkit-linear-gradient(0deg, #BBB, #FFFFFF); 
+    background-image: linear-gradient(0deg, #BBB, #FFFFFF);
+}
+
+.dvp-carousel .dvp-carousel-crumb-buttons,
+.dvp-carousel .dvp-carousel-crumb-buttons a {
+	display: inline-block;
+	position: relative;
+}
+
+.dvp-carousel .dvp-carousel-crumb {
+    background: url(../images/carousel/bullet_black.gif) no-repeat;
+    height: 16px;
+    width: 16px;
+}
+
+.dvp-carousel .dvp-carousel-crumb-active {
+    background: url(../images/carousel/bullet_orange.gif) no-repeat;
+}
+
+.dvp-carousel .dvp-carousel-crumb-over{
+    background: url(../images/carousel/bullet_yellow.gif) no-repeat;
+}
+
+.dvp-carousel .dvp-carousel-crumb-hover {
+	display: none;
+	height: 60px;
+	padding: 3px;
+	position: absolute;
+	top: 0;
+	width: 100px;
+	z-index: 1000;
+}
+
+.dvp-carousel .dvp-carousel-crumb-hover-inner {
+	display: block;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-crumb-hover-bg {
+	background-color: #EEE;
+	border-radius: 4px;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-crumb-hover img {
+	height: 54px; /* image height - (margin * 2) */
+	left: 0;
+	margin: 3px;
+	position: absolute;
+	top: 0;
+	width: 94px; /* image width - (margin * 2) */
+}
+
+.dvp-carousel .dvp-carousel-text,
+.dvp-carousel .dvp-carousel-text-bg {
+	color: #EEE;
+	font-size: large;
+	padding: 10px 25px;
+	position: absolute;
+	z-index: 100;
+}
+
+.dvp-carousel .dvp-carousel-text-bg {
+    background-color: #000;
+    color: transparent;
+    /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99333333, endColorstr=#99DDDDDD); /* IE8 and earlier */
+    /* These three lines are for transparency in all browsers. */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+    filter: alpha(opacity=40);
+    opacity:.4;
+    z-index: 1;
+}
+
+.dvp-carousel .dvp-carousel-text-tl {
+	left: 0;
+	top: 0;
+	text-align: left;
+	width: 80%;
+}
+
+.dvp-carousel .dvp-carousel-text-tc {
+    left: 0;
+    top: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-text-tr {
+	right: 0;
+	top: 0;
+	text-align: right;
+	width: 80%;
+}
+
+.dvp-carousel .dvp-carousel-text-bl {
+	bottom: 40px;
+	left: 0;
+	text-align: left;
+	width: 80%;
+}
+
+.dvp-carousel .dvp-carousel-text-bc {
+    bottom: 40px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-text-br {
+	bottom: 40px;
+	right: 0;
+	text-align: right;
+	width: 80%;
+}
+
+.dvp-carousel .dvp-carousel-text-c {
+	text-align: center;
+	top: 40%;
+	width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-timer {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	z-index: 1;
+}
+
+.dvp-carousel .dvp-carousel-nav {
+	background-image: url(../images/carousel/arrow-sprite.png);
+	bottom: 0;
+	height: 32px;
+	margin: 5px;
+	position: absolute;
+	width: 32px;
+	z-index: 100;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev-hor {
+	background-position: -32px 0px;
+	bottom: 0;
+    left: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev-hor-over {
+    background-position: 0px 0px;
+}
+
+.dvp-carousel .dvp-carousel-nav-next-hor {
+	background-position: -32px -32px;
+	bottom: 0;
+	right: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-next-hor-over {
+    background-position: 0px -32px;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev-vert {
+	background-position: -32px -64px;
+	left: 0;
+    top: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev-vert-over {
+    background-position: 0px -64px;
+}
+
+.dvp-carousel .dvp-carousel-nav-next-vert {
+	background-position: -32px -96px;
+	bottom: 0;
+	left: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-next-vert-over {
+    background-position: 0px -96px;
+}
