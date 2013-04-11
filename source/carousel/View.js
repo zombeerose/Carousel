@@ -46,7 +46,7 @@ Ext.define('Ext.ux.carousel.View',{
      * @cfg {Number} crumbHoverOffsetY
      * The number of pixels to offset the Y position of the div that displays the crumb thumbnail when hovering.
      */
-    crumbHoverOffsetY: -65,
+    crumbHoverOffsetY: -70,
     /**
      * @cfg {String} crumbOverCls
      */
@@ -69,9 +69,11 @@ Ext.define('Ext.ux.carousel.View',{
         '{%this.renderContainer(out,values)%}',
         '<div class="dvp-carousel-slide-wrapper" style="height: {height}px;">',
             '<tpl for="slides">',
-            '<div class="dvp-carousel-slide">', // style="display:none;"
+            '<div class="dvp-carousel-slide">',
+                '<tpl if="text">',
                 '<div class="dvp-carousel-text dvp-carousel-text-{text_position}" style="{text_style}">{text}</div>',
                 '<div class="dvp-carousel-text-bg dvp-carousel-text-{text_position}">{text}</div>',
+                '</tpl>',
                 '<img src="{image_src}" alt="{image_alt}" title="{image_title}">',
             '</div>',
             '</tpl>',
@@ -88,7 +90,7 @@ Ext.define('Ext.ux.carousel.View',{
                 '">',
                 //TODO: start/pause button
                 '<tpl for="slides">',
-                    '<a href="#" class="dvp-carousel-crumb"></a>', // slideIndex="{[xindex]}"
+                    '<a href="#" class="dvp-carousel-crumb"></a>',
                 '</tpl>',
                 '</span>',
                 '<div id="{id}-hoverEl" class="dvp-carousel-crumb-hover">',
@@ -139,7 +141,12 @@ Ext.define('Ext.ux.carousel.View',{
     
     /**
      * @cfg {Ext.data.Store} store
-     * Required.
+     * Either the #sourceEl or #store is required.
+     */
+    
+    /**
+     * @cfg {String/HTMLElement/Ext.Element} sourceEl
+     * Either the #sourceEl or #store is required.
      */
     
     /**
@@ -213,7 +220,7 @@ Ext.define('Ext.ux.carousel.View',{
         
         //<debug>
         if (!me.store){
-            Ext.Error.raise('A store is required for the carousel');
+            Ext.Error.raise('A store or sourceEl is required for the carousel');
         }
         //</debug>
     },
@@ -315,7 +322,11 @@ Ext.define('Ext.ux.carousel.View',{
     // @inheritdoc
     initRenderData: function() {
         var me = this;
-            
+
+        if (me.sourceEl){
+            me.loadStore();
+        }
+        
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
             isHorizontalNav: (me.navigationOrientation === 'h'),
@@ -324,6 +335,41 @@ Ext.define('Ext.ux.carousel.View',{
             showTimer: me.showTimer,
             slides: me.collectData(me.store.getRange())
         });
+    },
+    
+    /**
+     * @private
+     * Used for populating the store based on the sourceEl.
+     */
+    loadStore: function(){
+        var me = this,
+            store = Ext.create('Ext.ux.carousel.Store'),
+            el = Ext.get(me.sourceEl),
+            images, id;
+            
+        if (!el){
+            //<debug>
+            Ext.Error.raise('The specified sourceEl was not found!');
+            //</debug>
+            return;
+        }
+        
+        id = 1;
+        function eachImg(child){
+            var data = {
+                id: id++,
+                image_src: child.getAttribute('src'),
+                image_title: child.getAttribute('title'),
+                image_alt: child.getAttribute('alt')
+//                text_*: ?
+            };
+            store.add(data);
+        }
+        
+        images = el.select('img');
+        images.each(eachImg,me);
+        
+        me.store = store;
     },
     
     /**
@@ -565,7 +611,8 @@ Ext.define('Ext.ux.carousel.View',{
             texts = me.texts, //CompositeElement
             oldIndex = me.slideIndex,
             record,
-            lastIndex;
+            lastIndex,
+            item;
             
         if (newIndex === oldIndex && !initial){ return; }
         
@@ -581,7 +628,10 @@ Ext.define('Ext.ux.carousel.View',{
         if (!initial){
             //hide the current slide
             slides.item(oldIndex).setVisible(false);
-            texts.item(oldIndex).setVisible(false);
+            item = texts.item(oldIndex);
+            if (item){
+                item.setVisible(false);
+            }
             if (me.showBreadCrumb){
                 crumbs.removeCls(me.crumbActiveCls);
             }
@@ -592,7 +642,10 @@ Ext.define('Ext.ux.carousel.View',{
         
         //show the next one
         slides.item(newIndex).setVisible(true,record.get('image_animation'));
-        texts.item(newIndex).setVisible(true,record.get('text_animation'));
+        item = texts.item(newIndex);
+        if (item){
+            item.setVisible(true,record.get('text_animation'));
+        }
 
         if (me.showBreadCrumb){
             crumbs.item(newIndex).addCls(me.crumbActiveCls);
