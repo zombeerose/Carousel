@@ -67,7 +67,7 @@ Ext.define('Ext.ux.carousel.View',{
     
     renderTpl: [
         '{%this.renderContainer(out,values)%}',
-        '<div class="dvp-carousel-slide-wrapper" style="height: {height}px;">',
+        '<div class="dvp-carousel-slide-wrapper" style="<tpl if="height">height: {height}px;</tpl>">',
             '<tpl for="slides">',
             '<div class="dvp-carousel-slide">',
                 '<tpl if="text">',
@@ -170,16 +170,16 @@ Ext.define('Ext.ux.carousel.View',{
      */
     timerSize: 20,
     
-    /**
-     * @cfg {Object} transitionOptions
-     * Additional config options that are applied to the element animation when transitioning between slides.
-     */
-    
-    /**
-     * @cfg {String} transitionType
-     * Supported values include: 'animate','fade','slide'
-     */
-    transitionType: 'fade',
+//    /**
+//     * @cfg {Object} transitionOptions
+//     * Additional config options that are applied to the element animation when transitioning between slides.
+//     */
+//    
+//    /**
+//     * @cfg {String} transitionType
+//     * Supported values include: 'animate','fade','slide'
+//     */
+//    transitionType: 'fade',
     
     /**
      * @private
@@ -219,7 +219,7 @@ Ext.define('Ext.ux.carousel.View',{
         me.callParent(arguments);
         
         //<debug>
-        if (!me.store){
+        if (!me.store && !me.sourceEl){
             Ext.Error.raise('A store or sourceEl is required for the carousel');
         }
         //</debug>
@@ -254,7 +254,11 @@ Ext.define('Ext.ux.carousel.View',{
             mouseenter: me.onContainerMouseOver,
             mouseleave: me.onContainerMouseOut,
             scope: me
-        })
+        });
+        
+        if (me.sourceEl){
+            me.render(me.sourceEl);
+        }
     },
     
     /**
@@ -355,15 +359,16 @@ Ext.define('Ext.ux.carousel.View',{
         }
         
         id = 1;
-        function eachImg(child){
+        function eachImg(img){
             var data = {
                 id: id++,
-                image_src: child.getAttribute('src'),
-                image_title: child.getAttribute('title'),
-                image_alt: child.getAttribute('alt')
-//                text_*: ?
+                image_src: img.getAttribute('src'),
+                image_title: img.getAttribute('title'),
+                image_alt: img.getAttribute('alt')
+//TODO:                text_*: ?
             };
             store.add(data);
+            img.destroy();
         }
         
         images = el.select('img');
