@@ -346,7 +346,7 @@ Ext.define('Ext.ux.carousel.View',{
             //path = "M"+R+","+0+" A"+R+","+R+",0,"+isLargeArc+",1,"+x+","+y;
             path = "M"+centerX+","+(centerY-R)+" A"+R+","+R+",0,"+isLargeArc+",1,"+x+","+y;
 //        }
-//        DV.log('path '+path+'; value: '+value+'; total: '+total+'; alpha '+alpha+'; a '+a+'; x '+x+'; y '+y);
+//        log('path '+path+'; value: '+value+'; total: '+total+'; alpha '+alpha+'; a '+a+'; x '+x+'; y '+y);
         return path;
     },
     
@@ -439,7 +439,6 @@ Ext.define('Ext.ux.carousel.View',{
                 url = record.get('url');
                 if (!url){ return; }
                 
-                DV.log('onContainerClick openurl:',url);
                 me.fireEvent('openurl',me,url);
             }
         }
