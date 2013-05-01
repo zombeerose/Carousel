@@ -2,7 +2,7 @@
  * The CSS specific to the banner rotating component.
  */
 .dvp-carousel {
-	border: 1px dashed grey;
+	border: 1px solid #D7D7D7;
 	position: relative;
 }
 
