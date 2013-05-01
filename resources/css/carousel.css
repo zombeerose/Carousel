@@ -34,16 +34,17 @@
 }
 
 .dvp-carousel .dvp-carousel-crumb-buttons-pretty {
-    border: 1px solid #777;
-    border-radius: 20px;
+    border: 1px solid #D7D7D7;
+    border-radius: 4px; /* 20px */
     
+    background-color: #D7D2D2;
     /* experimental */
     /* 98E4FF */
-    background-image: -moz-linear-gradient(0deg, #BBB, #FFFFFF);
-    background-image: -ms-linear-gradient(0deg, #BBB, #FFFFFF);
-    background-image: -o-linear-gradient(0deg, #BBB, #FFFFFF);
-    background-image: -webkit-linear-gradient(0deg, #BBB, #FFFFFF); 
-    background-image: linear-gradient(0deg, #BBB, #FFFFFF);
+    background-image: -moz-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -ms-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -o-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -webkit-linear-gradient(0deg, #F0F0F0, #D7D7D7); 
+    background-image: linear-gradient(0deg, #F0F0F0, #D7D7D7);
 }
 
 .dvp-carousel .dvp-carousel-crumb-buttons,
@@ -56,6 +57,7 @@
     background: url(../images/carousel/bullet_black.gif) no-repeat;
     height: 16px;
     width: 16px;
+    vertical-align: middle;
 }
 
 .dvp-carousel .dvp-carousel-crumb-active {
