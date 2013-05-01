@@ -74,7 +74,9 @@ Ext.define('Ext.ux.carousel.View',{
                 '<div class="dvp-carousel-text dvp-carousel-text-{text_position}" style="{text_style}">{text}</div>',
                 '<div class="dvp-carousel-text-bg dvp-carousel-text-{text_position}">{text}</div>',
                 '</tpl>',
+                '<tpl if="image_src">',
                 '<img src="{image_src}" alt="{image_alt}" title="{image_title}">',
+                '</tpl>',
             '</div>',
             '</tpl>',
         '</div>',
@@ -147,6 +149,22 @@ Ext.define('Ext.ux.carousel.View',{
     /**
      * @cfg {String/HTMLElement/Ext.Element} sourceEl
      * Either the #sourceEl or #store is required.
+     * The innerHTML of the sourceEl must conform to the following syntax:
+     * 
+     * <br>
+     * &lt;div class="..."&gt;<br>
+     *   &lt;img 
+     *      alt="optional" 
+     *      title="optional" 
+     *      src="image for slide" 
+     *      slideText="text to display for this slide" 
+     *      slideTextPosition="enum for positioning text" 
+     *      slideUrl="url to load when slide is clicked" 
+     *   &gt; 
+     * <br>
+     *   ...next img in order of appearance
+     * <br>
+     * &lt;/div&gt;
      */
     
     /**
@@ -218,6 +236,16 @@ Ext.define('Ext.ux.carousel.View',{
         
         me.callParent(arguments);
         
+        me.addEvents(
+            /**
+             * @event openurl
+             * Fires when a user clicks a carousel slide that has a url defined.
+             * @param {Ext.ux.carousel.View} this
+             * @param {String} url The url that is linked to the current slide.
+             */
+            'openurl'
+        );
+        
         //<debug>
         if (!me.store && !me.sourceEl){
             Ext.Error.raise('A store or sourceEl is required for the carousel');
@@ -234,7 +262,6 @@ Ext.define('Ext.ux.carousel.View',{
         if (me.showNavigation){
             me.on({
                 element: 'navNextEl',
-                click: me.onNavNext,
                 mouseenter: me.onNavMouseOverOut,
                 mouseleave: me.onNavMouseOverOut,
                 scope: me
@@ -242,7 +269,6 @@ Ext.define('Ext.ux.carousel.View',{
             
             me.on({
                 element: 'navPrevEl',
-                click: me.onNavPrevious,
                 mouseenter: me.onNavMouseOverOut,
                 mouseleave: me.onNavMouseOverOut,
                 scope: me
@@ -251,6 +277,7 @@ Ext.define('Ext.ux.carousel.View',{
         
         me.on({
             element: 'el',
+            click: me.onContainerClick,
             mouseenter: me.onContainerMouseOver,
             mouseleave: me.onContainerMouseOut,
             scope: me
@@ -343,7 +370,7 @@ Ext.define('Ext.ux.carousel.View',{
     
     /**
      * @private
-     * Used for populating the store based on the sourceEl.
+     * Used for populating the store based on the {@link #sourceEl}.
      */
     loadStore: function(){
         var me = this,
@@ -360,13 +387,19 @@ Ext.define('Ext.ux.carousel.View',{
         
         id = 1;
         function eachImg(img){
-            var data = {
+            var text = img.getAttribute('slideText'), data;
+            
+            data = {
                 id: id++,
                 image_src: img.getAttribute('src'),
+                image_alt: img.getAttribute('alt') || text,
                 image_title: img.getAttribute('title'),
-                image_alt: img.getAttribute('alt')
-//TODO:                text_*: ?
+                text: text,
+                text_position: img.getAttribute('slideTextPosition') || 'tl',
+                text_style: img.getAttribute('slideTextStyle'),
+                url: img.getAttribute('slideUrl')
             };
+            
             store.add(data);
             img.destroy();
         }
@@ -382,6 +415,34 @@ Ext.define('Ext.ux.carousel.View',{
      */
     next: function(){
         this.setSlide(this.slideIndex+1);
+    },
+    
+    onContainerClick: function(e, t){
+        var me = this,
+            index,
+            record,
+            url;
+            
+        if (e.getTarget('.dvp-carousel-crumb')){
+            index = me.crumbs.indexOf(t);
+            me.setSlide(index);
+        } else {
+            if (e.getTarget('.dvp-carousel-nav')){
+                if (e.within(me.navNextEl)){
+                    me.next();
+                } else {
+                    me.previous();
+                }
+            } else {
+                index = me.slideIndex;
+                record = me.store.getAt(index);
+                url = record.get('url');
+                if (!url){ return; }
+                
+                DV.log('onContainerClick openurl:',url);
+                me.fireEvent('openurl',me,url);
+            }
+        }
     },
     
     onContainerMouseOut: function(e, t){
@@ -422,11 +483,6 @@ Ext.define('Ext.ux.carousel.View',{
         }
     },
 
-    onCrumbClick: function(e, t){
-        var newIndex = this.crumbs.indexOf(t);
-        this.setSlide(newIndex);
-    },
-    
     onCrumbMouseOut: function(e, t){
         Ext.fly(t).removeCls(this.crumbOverCls);
         
@@ -491,14 +547,6 @@ Ext.define('Ext.ux.carousel.View',{
         }
     },
     
-    onNavNext: function(){
-        this.next();
-    },
-    
-    onNavPrevious: function(){
-        this.previous();
-    },
-    
     // @inheritdoc
     onRender: function(){
         var me = this;
@@ -509,8 +557,7 @@ Ext.define('Ext.ux.carousel.View',{
             //delegating from the crumbCt doesn't reliably detect/fire events; me.crumbCtEl.on({ delegate: '.dvp-carousel-crumb',...
             me.crumbs.each(function(crumb){
                 crumb.on({
-                    buffer: 10,
-                    click: me.onCrumbClick,
+                    buffer: 10, //slight buffer b/c of multiple mouse events when moving from one to another
                     mouseenter: me.onCrumbMouseOver,
                     mouseleave: me.onCrumbMouseOut,
                     scope: me
