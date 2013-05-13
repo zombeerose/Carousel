@@ -24,12 +24,12 @@
 	height: 0;
 	position: relative;
 	text-align: center;
+	top: -35px;
 }
 
 .dvp-carousel .dvp-carousel-crumb-buttons {
 	background: transparent;
 	padding: 4px;
-	top: -35px;
 	z-index: 100;
 }
 
@@ -68,17 +68,26 @@
     background: url(../images/carousel/bullet_yellow.gif) no-repeat;
 }
 
-.dvp-carousel .dvp-carousel-crumb-hover {
-	display: none;
+.dvp-carousel .dvp-carousel-crumb-thumb {
+	display: inline-block;
 	height: 60px;
 	padding: 3px;
-	position: absolute;
-	top: 0;
+	position: relative;
 	width: 100px;
 	z-index: 1000;
 }
 
-.dvp-carousel .dvp-carousel-crumb-hover-inner {
+.dvp-carousel .dvp-carousel-crumb-thumb-hover {
+	display: none;
+    height: 60px;
+    padding: 3px;
+    position: absolute;
+    top: 0;
+    width: 100px;
+    z-index: 1000;
+}
+
+.dvp-carousel .dvp-carousel-crumb-thumb-inner {
 	display: block;
 	height: 100%;
 	left: 0;
@@ -87,7 +96,7 @@
 	width: 100%;
 }
 
-.dvp-carousel .dvp-carousel-crumb-hover-bg {
+.dvp-carousel .dvp-carousel-crumb-thumb-bg {
 	background-color: #EEE;
 	border-radius: 4px;
 	height: 100%;
@@ -97,7 +106,7 @@
 	width: 100%;
 }
 
-.dvp-carousel .dvp-carousel-crumb-hover img {
+.dvp-carousel .dvp-carousel-crumb-thumb img {
 	height: 54px; /* image height - (margin * 2) */
 	left: 0;
 	margin: 3px;

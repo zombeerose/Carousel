@@ -52,6 +52,12 @@ Ext.define('Ext.ux.carousel.View',{
      */
     crumbOverCls: 'dvp-carousel-crumb-over',
     /**
+     * @cfg {Boolean} crumbAsThumb
+     * When set to true, each crumb will appear as a thumbnail of the slide. 
+     * Default is false, which will display a bullet instead. The corresponding thumb is displayed when hovering over the bullet.
+     */
+    crumbAsThumb: true, //TODO:
+    /**
      * @cfg {String} navigationOrientation
      * Supported values include: 'h' for horizonatal/left-right, or 'v' for vertical/top-bottom
      */
@@ -87,20 +93,31 @@ Ext.define('Ext.ux.carousel.View',{
         
         '<tpl if="showBreadCrumb">',
             '<div id="{id}-crumbWrapEl" class="dvp-carousel-crumb-wrapper">', 
-                '<span class="dvp-carousel-crumb-buttons ',
-                    '<tpl if="Ext.supports.CSS3LinearGradient">dvp-carousel-crumb-buttons-pretty</tpl>',
-                '">',
                 //TODO: start/pause button
-                '<tpl for="slides">',
-                    '<a href="#" class="dvp-carousel-crumb"></a>',
-                '</tpl>',
-                '</span>',
-                '<div id="{id}-hoverEl" class="dvp-carousel-crumb-hover">',
-                    '<div class="dvp-carousel-crumb-hover-inner">',
-                        '<div class="dvp-carousel-crumb-hover-bg"></div>',
-                        '<img src="">',
+                '<tpl if="largeCrumbs">',
+                    '<tpl for="slides">',
+                        '<div class="dvp-carousel-crumb-thumb">',
+                            '<div class="dvp-carousel-crumb-thumb-inner">',
+                                '<div class="dvp-carousel-crumb-thumb-bg"></div>',
+                                '<img src="{image_src}" alt="{image_alt}" title="{image_title}">',
+                            '</div>',
+                        '</div>',
+                    '</tpl>',
+                '<tpl else>',
+                    '<span class="dvp-carousel-crumb-buttons ',
+                        '<tpl if="Ext.supports.CSS3LinearGradient">dvp-carousel-crumb-buttons-pretty</tpl>',
+                    '">',
+                    '<tpl for="slides">',
+                        '<a href="#" class="dvp-carousel-crumb"></a>',
+                    '</tpl>',
+                    '</span>',
+                    '<div id="{id}-hoverEl" class="dvp-carousel-crumb-thumb-hover">',
+                        '<div class="dvp-carousel-crumb-thumb-inner">',
+                            '<div class="dvp-carousel-crumb-thumb-bg"></div>',
+                            '<img src="">',
+                        '</div>',
                     '</div>',
-                '</div>',
+                '</tpl>',
             '</div>',
         '</tpl>',
         
@@ -361,6 +378,7 @@ Ext.define('Ext.ux.carousel.View',{
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
             isHorizontalNav: (me.navigationOrientation === 'h'),
+            largeCrumbs: me.crumbAsThumb,
             showBreadCrumb: me.showBreadCrumb,
             showNavigation: me.showNavigation,
             showTimer: me.showTimer,
@@ -699,7 +717,10 @@ Ext.define('Ext.ux.carousel.View',{
         }
 
         if (me.showBreadCrumb){
-            crumbs.item(newIndex).addCls(me.crumbActiveCls);
+            item = crumbs.item(newIndex);
+            if (item){
+                item.addCls(me.crumbActiveCls);
+            }
         }
         
         me.slideIndex = newIndex;
