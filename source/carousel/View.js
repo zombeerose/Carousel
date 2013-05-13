@@ -23,40 +23,29 @@ Ext.define('Ext.ux.carousel.View',{
     cls: 'dvp-carousel',
     
     childEls: [
-        'navNextEl',
-        'navPrevEl',
-        'crumbWrapEl',
+        'navEl',
+        'navNextSlideEl',
+        'navPrevSlideEl',
+        'navNextThumbEl',
+        'navPrevThumbEl',
+        'footerEl', //'crumbWrapEl',
         'timerEl',
         'hoverEl',
-        { name: 'crumbs', select: '.dvp-carousel-crumb' },
         { name: 'slides', select: '.dvp-carousel-slide' },
-        { name: 'texts', select: '.dvp-carousel-text' }
+        { name: 'texts', select: '.dvp-carousel-text' },
+        { name: 'thumbs', select: '.dvp-carousel-thumb' }
     ],
     
     /**
-     * @cfg {String} crumbActiveCls
+     * @cfg {Number} hoverOffsetX
+     * The number of pixels to offset the X position of the div that displays the thumbnail when hovering over the small footer navigation.
      */
-    crumbActiveCls: 'dvp-carousel-crumb-active',
+    hoverOffsetX: 0,
     /**
-     * @cfg {Number} crumbHoverOffsetX
-     * The number of pixels to offset the X position of the div that displays the crumb thumbnail when hovering.
+     * @cfg {Number} hoverOffsetY
+     * The number of pixels to offset the Y position of the div that displays the thumbnail when hovering over the small footer navigation.
      */
-    crumbHoverOffsetX: 0,
-    /**
-     * @cfg {Number} crumbHoverOffsetY
-     * The number of pixels to offset the Y position of the div that displays the crumb thumbnail when hovering.
-     */
-    crumbHoverOffsetY: -70,
-    /**
-     * @cfg {String} crumbOverCls
-     */
-    crumbOverCls: 'dvp-carousel-crumb-over',
-    /**
-     * @cfg {Boolean} crumbAsThumb
-     * When set to true, each crumb will appear as a thumbnail of the slide. 
-     * Default is false, which will display a bullet instead. The corresponding thumb is displayed when hovering over the bullet.
-     */
-    crumbAsThumb: true, //TODO:
+    hoverOffsetY: -70,
     /**
      * @cfg {String} navigationOrientation
      * Supported values include: 'h' for horizonatal/left-right, or 'v' for vertical/top-bottom
@@ -68,12 +57,13 @@ Ext.define('Ext.ux.carousel.View',{
     navigationOverCls: 'dvp-carousel-nav-over',
     /**
      * @cfg {Boolean} pauseOnHover
+     * The default of true will pause the current timer/rotation on the current slide if the carousel is running.
      */
     pauseOnHover: true,
     
     renderTpl: [
         '{%this.renderContainer(out,values)%}',
-        '<div class="dvp-carousel-slide-wrapper" style="<tpl if="height">height: {height}px;</tpl>">',
+        '<div class="dvp-carousel-slide-wrapper">',
             '<tpl for="slides">',
             '<div class="dvp-carousel-slide">',
                 '<tpl if="text">',
@@ -91,57 +81,89 @@ Ext.define('Ext.ux.carousel.View',{
             '<div id="{id}-timerEl" class="dvp-carousel-timer"></div>', //uses Ext.draw.Component
         '</tpl>',
         
-        '<tpl if="showBreadCrumb">',
-            '<div id="{id}-crumbWrapEl" class="dvp-carousel-crumb-wrapper">', 
-                //TODO: start/pause button
-                '<tpl if="largeCrumbs">',
-                    '<tpl for="slides">',
-                        '<div class="dvp-carousel-crumb-thumb">',
-                            '<div class="dvp-carousel-crumb-thumb-inner">',
-                                '<div class="dvp-carousel-crumb-thumb-bg"></div>',
-                                '<img src="{image_src}" alt="{image_alt}" title="{image_title}">',
-                            '</div>',
-                        '</div>',
-                    '</tpl>',
-                '<tpl else>',
-                    '<span class="dvp-carousel-crumb-buttons ',
-                        '<tpl if="Ext.supports.CSS3LinearGradient">dvp-carousel-crumb-buttons-pretty</tpl>',
-                    '">',
-                    '<tpl for="slides">',
-                        '<a href="#" class="dvp-carousel-crumb"></a>',
-                    '</tpl>',
-                    '</span>',
-                    '<div id="{id}-hoverEl" class="dvp-carousel-crumb-thumb-hover">',
-                        '<div class="dvp-carousel-crumb-thumb-inner">',
-                            '<div class="dvp-carousel-crumb-thumb-bg"></div>',
-                            '<img src="">',
+        '<tpl if="showFooter">',
+            '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="thumbTextOnly">text-only</tpl>">',
+                '<div class="dvp-carousel-thumb-ct',
+                    '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
+                '">',
+                '<a id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev" href="#"></a>',
+                '<tpl for="slides">',
+                    '<div class="dvp-carousel-thumb {[xindex === 1 ? "thumb-first" : ""]}{[xindex === xcount ? "thumb-last" : ""]}">',
+                        '<div class="dvp-carousel-thumb-inner">',
+                            '<div class="dvp-carousel-thumb-bg"></div>',
+                            '<tpl if="parent.showThumbnails">',
+                                '<img class="dvp-carousel-thumb-fg" src="{image_src}" alt="{image_alt}" title="{image_title}">',
+                                '<tpl if="thumb_text">',
+                                    '<div class="dvp-carousel-thumb-text">{thumb_text}</div>',
+                                '</tpl>',
+                            '<tpl else>',
+                                '<a href="#" class="dvp-carousel-thumb-fg"></a>',
+                            '</tpl>',
                         '</div>',
                     '</div>',
                 '</tpl>',
+                '<a id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next" href="#"></a>',
+                '</div>',
+                
+                '<div id="{id}-hoverEl" class="dvp-carousel-hover">',
+                    '<div class="dvp-carousel-hover-inner">',
+                        '<div class="dvp-carousel-hover-bg"></div>',
+                        '<img class="dvp-carousel-hover-fg" src="">',
+                    '</div>',
+                '</div>',
+                
+//                //TODO: start/pause button
+                
             '</div>',
         '</tpl>',
         
         '<tpl if="showNavigation">',
-            '<a id="{id}-navPrevEl" class="dvp-carousel-nav dvp-carousel-nav-prev-{[ values.isHorizontalNav ? "hor" : "vert" ]}" href="#"></a>',
-            '<a id="{id}-navNextEl" class="dvp-carousel-nav dvp-carousel-nav-next-{[ values.isHorizontalNav ? "hor" : "vert" ]}" href="#"></a>',
+            '<div id="{id}-navEl" class="dvp-carousel-nav-ct">',
+                '<a id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev" href="#"></a>',
+                '<div class="dvp-carousel-nav-bg dvp-carousel-nav-prev"></div>',
+                '<a id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next" href="#"></a>',
+                '<div class="dvp-carousel-nav-bg dvp-carousel-nav-next"></div>',
+            '</div>',
         '</tpl>'
     ],
     
     /**
-     * @cfg {Boolean} showBreadCrumb
-     * Indicates if the bread crumb element that contains a small indicator for each slide is available.
+     * @cfg {Boolean} showFooter
+     * Indicates if the footer is visible that displays the navigation links for the other slides.
      */
-    showBreadCrumb: true,
+    showFooter: true,
+    /**
+     * @cfg {Boolean} showFooterAlways
+     * Requires that {@link #showFooter} be true.
+     * Indicates if the footer is always visible.  
+     * Default is false, which will only show the footer when the user hovers over the container.
+     */
+    showFooterAlways: true, //TODO: false
+    /**
+     * @cfg {Boolean} showThumbnails
+     * {@link #showFooter} must be enabled.
+     * When set to true, each slide will have a corresponding thumbnail displayed in the footer. 
+     * Default is false, which will display a bullet in the footer. The corresponding thumbnail is displayed when hovering over the bullet.
+     */
+    showThumbnails: true, //TODO: false
     /**
      * @cfg {Boolean} showNavigation
      * Indicates if the arrows are available for manually switching to the next slide.
      */
     showNavigation: true,
     /**
-     * @cfg {Boolean} showPlay
-     * Indicates if a play/pause element is available.
+     * @cfg {Boolean} showNavigationAlways
+     * Requires that {@link #showNavigation} be true.
+     * Indicates if the navigation buttons are always visible.  
+     * Default is false, which will only show the buttons when the user hovers over the container.
      */
-    showPlay: false,
+    showNavigationAlways: false,
+    //TODO:
+//    /**
+//     * @cfg {Boolean} showPlay
+//     * Indicates if a play/pause element is available.
+//     */
+//    showPlay: false,
     /**
      * @cfg {Boolean} showTimer
      * Indicates if a timer is displayed that provides feedback about the remaining time before the slide auto-transitions.
@@ -184,6 +206,20 @@ Ext.define('Ext.ux.carousel.View',{
      * &lt;/div&gt;
      */
     
+    /**
+     * @cfg {String} thumbActiveCls
+     */
+    thumbActiveCls: 'dvp-carousel-thumb-active',
+    /**
+     * @cfg {String} thumbOverCls
+     */
+    thumbOverCls: 'dvp-carousel-thumb-over',
+    /**
+     * @cfg {Boolean} thumbTextOnly
+     * Requires that {@link #showThumbnails} be enabled.
+     * When set to true, the thumbnail will display text but no image.
+     */
+    thumbTextOnly: false, //TODO: false
     /**
      * @cfg {Number} timerInterval
      * The amount of time in milliseconds for running the timer update task.
@@ -240,6 +276,12 @@ Ext.define('Ext.ux.carousel.View',{
         me.slideIndex = me.startSlide;
         
         /**
+         * @property thumbPage
+         * @type Number
+         */
+        me.thumbPage = 0;
+        
+        /**
          * @property timerCnt
          * @type Number
          */
@@ -276,30 +318,6 @@ Ext.define('Ext.ux.carousel.View',{
         
         me.callParent(arguments);
         
-        if (me.showNavigation){
-            me.on({
-                element: 'navNextEl',
-                mouseenter: me.onNavMouseOverOut,
-                mouseleave: me.onNavMouseOverOut,
-                scope: me
-            });
-            
-            me.on({
-                element: 'navPrevEl',
-                mouseenter: me.onNavMouseOverOut,
-                mouseleave: me.onNavMouseOverOut,
-                scope: me
-            });
-        }
-        
-        me.on({
-            element: 'el',
-            click: me.onContainerClick,
-            mouseenter: me.onContainerMouseOver,
-            mouseleave: me.onContainerMouseOut,
-            scope: me
-        });
-        
         if (me.sourceEl){
             me.render(me.sourceEl);
         }
@@ -321,6 +339,26 @@ Ext.define('Ext.ux.carousel.View',{
             data[i] = record.data;
         }
         return data;
+    },
+    
+    
+    /**
+     * @private
+     * @return {Number}
+     */
+    getThumbsPerPage: function(){
+        var thumb = this.thumbs.first(),
+            ctWidth,
+            thumbWidth,
+            max = 0;
+            
+        if (thumb){
+            thumbWidth = thumb.getComputedWidth() + thumb.getMargin('lr');
+            ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth();
+            max = Math.floor(ctWidth / thumbWidth);
+        }
+        
+        return max;
     },
     
     /**
@@ -378,11 +416,12 @@ Ext.define('Ext.ux.carousel.View',{
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
             isHorizontalNav: (me.navigationOrientation === 'h'),
-            largeCrumbs: me.crumbAsThumb,
-            showBreadCrumb: me.showBreadCrumb,
+            showFooter: me.showFooter,
             showNavigation: me.showNavigation,
+            showThumbnails: me.showThumbnails,
             showTimer: me.showTimer,
-            slides: me.collectData(me.store.getRange())
+            slides: me.collectData(me.store.getRange()),
+            thumbTextOnly: me.thumbTextOnly
         });
     },
     
@@ -435,30 +474,38 @@ Ext.define('Ext.ux.carousel.View',{
         this.setSlide(this.slideIndex+1);
     },
     
+    nextThumbPage: function(){
+        this.setThumbPage(this.thumbPage+1);
+    },
+    
     onContainerClick: function(e, t){
         var me = this,
+            target,
             index,
             record,
             url;
             
-        if (e.getTarget('.dvp-carousel-crumb')){
-            index = me.crumbs.indexOf(t);
+        if (target = e.getTarget('.dvp-carousel-thumb')){
+            index = me.thumbs.indexOf(target);
             me.setSlide(index);
-        } else {
-            if (e.getTarget('.dvp-carousel-nav')){
-                if (e.within(me.navNextEl)){
-                    me.next();
-                } else {
-                    me.previous();
-                }
+        } else if (e.getTarget('.dvp-carousel-nav')){
+            if (e.within(me.navNextSlideEl)){
+                me.next();
             } else {
-                index = me.slideIndex;
-                record = me.store.getAt(index);
-                url = record.get('url');
-                if (!url){ return; }
-                
-                me.fireEvent('openurl',me,url);
+                me.previous();
             }
+        } else if (e.getTarget('.dvp-carousel-thumb-nav-prev')){
+            me.previousThumbPage();
+        } else if (e.getTarget('.dvp-carousel-thumb-nav-next')){
+            me.nextThumbPage();
+        } else {
+            //assumes any other clicks were on the actual slide
+            index = me.slideIndex;
+            record = me.store.getAt(index);
+            url = record.get('url');
+            if (!url){ return; }
+            
+            me.fireEvent('openurl',me,url);
         }
     },
     
@@ -471,13 +518,12 @@ Ext.define('Ext.ux.carousel.View',{
             delete me._wasRunning;
         }
         
-        if (me.showBreadCrumb){
-            me.crumbWrapEl.fadeOut();
+        if (me.showFooter && !me.showFooterAlways){
+            me.footerEl.fadeOut();
         }
         
-        if (me.showNavigation){
-            me.navPrevEl.fadeOut();
-            me.navNextEl.fadeOut();
+        if (me.showNavigation && !me.showNavigationAlways){
+            me.navEl.fadeOut();
         }
     },
     
@@ -490,64 +536,79 @@ Ext.define('Ext.ux.carousel.View',{
             me.pause();
         }
         
-        if (me.showBreadCrumb){
-            me.crumbWrapEl.fadeIn();
+        if (me.showFooter && !me.showFooterAlways){
+            me.footerEl.fadeIn();
         }
         
-        if (me.showNavigation){
-            me.navPrevEl.fadeIn();
-            me.navNextEl.fadeIn();
+        if (me.showNavigation && !me.showNavigationAlways){
+            me.navEl.fadeIn();
         }
     },
 
     onCrumbMouseOut: function(e, t){
-        Ext.fly(t).removeCls(this.crumbOverCls);
+        var me = this,
+            thumb;
         
-        this._abortThumb = true;
-        this.hoverEl.hide(); //do not animate b/c delay may interfere with next show
+        thumb = e.getTarget('.dvp-carousel-thumb',10,true);
+        thumb.removeCls(me.thumbOverCls);
+        
+        me._abortHover = true;
+        if (!me.showThumbnails){
+            me.hoverEl.hide(); //do not animate b/c delay may interfere with next show
+        }
     },
     
     onCrumbMouseOver: function(e, t){
         var me = this,
-            img = me.hoverEl.down('img'),
-            crumb = Ext.get(t),
+            thumb = e.getTarget('.dvp-carousel-thumb',10,true), //Ext.get(t),
+            img,
             index,
             record,
             xy,
             src;
             
-        if (crumb.hasCls(me.crumbActiveCls)){ return; }
+        thumb.addCls(me.thumbOverCls);
         
-        crumb.addCls(me.crumbOverCls);
+        if (thumb.hasCls(me.thumbActiveCls)){ return; }
         
-        if (img){
-            index = me.crumbs.indexOf(crumb);
-            record = me.store.getAt(index);
-            src = record.get('image_src');
-            xy = crumb.getXY();
-            xy[0] = xy[0] + me.crumbHoverOffsetX;
-            xy[1] = xy[1] + me.crumbHoverOffsetY;
-            //defer showing, otherwise the last image will be visible
-            img.on('load',function(){
-                //check if the user stopped hovering before we loaded
-                if (this._abortThumb){ return; }
+        if (!me.showThumbnails){
+            img = me.hoverEl.down('img');
+            if (img){
+                index = me.thumbs.indexOf(thumb);
+                record = me.store.getAt(index);
+                src = record.get('image_src');
+                xy = thumb.getXY();
+                xy[0] = xy[0] + me.hoverOffsetX;
+                xy[1] = xy[1] + me.hoverOffsetY;
+                //defer showing, otherwise the last image will be visible
+                img.on('load',function(){
+                    //check if the user stopped hovering before we loaded
+                    if (this._abortHover){ return; }
+                    
+                    this.hoverEl.show(true); //display than show ... important for 1st time
+                    this.hoverEl.setXY(xy);
+                },me,{single:true});
                 
-                this.hoverEl.show(true); //display than show ... important for 1st time
-                this.hoverEl.setXY(xy);
-            },me,{single:true});
-            
-            delete me._abortThumb;
-            img.set({src:src});
+                delete me._abortHover;
+                img.set({src:src});
+            }
         }
     },
     
     onDestroy: function(){
+DV.log('Carousel destroy');//TODO
         Ext.destroyMembers(this,'draw','timerTask');
         this.callParent(arguments);
     },
     
+    /**
+     * @private
+     * @param {Ext.EventObject} e
+     * @param {HTMLElement} t
+     */
     onNavMouseOverOut: function(e, t){
-        var classes = Ext.fly(t).getAttribute('className').split(' '), //just 'class' is not valid in IE
+        var target = e.getTarget('a',5,true), //e.getTarget('.dvp-carousel-nav',10,true),
+            classes = target.getAttribute('className').split(' '), //just 'class' is not valid in IE
             i, l, cls, overCls;
             
         l = classes.length;
@@ -560,25 +621,31 @@ Ext.define('Ext.ux.carousel.View',{
         }
         
         if (overCls){
-            Ext.fly(t).toggleCls(overCls);
+            target.toggleCls(overCls);
         }
     },
     
     // @inheritdoc
-    onRender: function(){
-        var me = this;
+    onRender: function(){ //onRender
+        var me = this,
+            pageSize;
         
         me.callParent(arguments);
         
-        if (me.showBreadCrumb){
-            //delegating from the crumbCt doesn't reliably detect/fire events; me.crumbCtEl.on({ delegate: '.dvp-carousel-crumb',...
-            me.crumbs.each(function(crumb){
-                crumb.on({
+        if (me.showFooter){
+//TODO: remove            pageSize = me.getThumbsPerPage() - 1; //zero-based
+            //delegating from the thumbnail Ct doesn't reliably detect/fire events; me.thumbCtEl.on({ delegate: '.dvp-carousel-thumb',...
+            me.thumbs.each(function(thumb,c,index){
+                thumb.on({
                     buffer: 10, //slight buffer b/c of multiple mouse events when moving from one to another
                     mouseenter: me.onCrumbMouseOver,
                     mouseleave: me.onCrumbMouseOut,
                     scope: me
                 });
+                
+//                if (index <= max){
+//                    thumb.setDisplayed(true);
+//                }
             });
         }
         
@@ -591,21 +658,68 @@ Ext.define('Ext.ux.carousel.View',{
             });
         }
         
-        if (me.showBreadCrumb){
-            me.crumbWrapEl.hide();
-        }
+        //visibility and mouse effects...
+        me.on({
+            element: 'el',
+            click: me.onContainerClick,
+            mouseenter: me.onContainerMouseOver,
+            mouseleave: me.onContainerMouseOut,
+            scope: me
+        });
+        
         if (me.showNavigation){
-            me.navPrevEl.hide();
-            me.navNextEl.hide();
+            if (!me.showNavigationAlways){
+                me.navEl.hide();
+            }
+            
+            me.on({
+                element: 'navNextSlideEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
+            
+            me.on({
+                element: 'navPrevSlideEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
         }
+        
+        if (me.showFooter){
+            if (!me.showFooterAlways){
+                me.footerEl.hide();
+            }
+            
+            me.on({
+                element: 'navNextThumbEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
+            
+            me.on({
+                element: 'navPrevThumbEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
+            
+            me.thumbs.setVisibilityMode(Ext.Element.DISPLAY).hide();
+            me.setThumbPage(me.thumbPage, true); //initial
+        }
+        
         me.slides.hide();
         me.texts.hide();
         
+        //set the initial slide
         me.setSlide(me.startSlide, true); //initial
         if (me.autoStart){
             me.start();
         }
-    },
+    }, //eof onRender
+
     
     /**
      * @private
@@ -663,6 +777,10 @@ Ext.define('Ext.ux.carousel.View',{
         this.setSlide(this.slideIndex-1);
     },
     
+    previousThumbPage: function(){
+        this.setThumbPage(this.thumbPage-1);
+    },
+    
 //    resume: function(){
 //        this.timerTask.start();
 //        this.running = true;
@@ -675,7 +793,7 @@ Ext.define('Ext.ux.carousel.View',{
      */
     setSlide: function(newIndex, initial){
         var me = this,
-            crumbs = me.crumbs, //CompositeElement
+            thumbs = me.thumbs, //CompositeElement
             slides = me.slides, //CompositeElement
             texts = me.texts, //CompositeElement
             oldIndex = me.slideIndex,
@@ -701,8 +819,8 @@ Ext.define('Ext.ux.carousel.View',{
             if (item){
                 item.setVisible(false);
             }
-            if (me.showBreadCrumb){
-                crumbs.removeCls(me.crumbActiveCls);
+            if (me.showFooter){
+                thumbs.removeCls(me.thumbActiveCls);
             }
             if (me.showTimer){
                 me.draw.surface.removeAll(true);
@@ -716,15 +834,61 @@ Ext.define('Ext.ux.carousel.View',{
             item.setVisible(true,record.get('text_animation'));
         }
 
-        if (me.showBreadCrumb){
-            item = crumbs.item(newIndex);
+        if (me.showFooter){
+            item = thumbs.item(newIndex);
             if (item){
-                item.addCls(me.crumbActiveCls);
+                item.addCls(me.thumbActiveCls);
             }
         }
         
         me.slideIndex = newIndex;
         me.timerCnt = 0;
+    }, //eof setSlide
+    
+    /**
+     * @private
+     * @param {Number} newIndex Zero-based
+     * @param {Boolean} initial
+     */
+    setThumbPage: function(newIndex, initial){
+        var me = this,
+            thumbs = me.thumbs, //CompositeElement;
+            oldIndex = me.thumbPage,
+            totalThumbs, perPage, startAt, thumb, i, l;
+            
+        //no change
+        if (newIndex === oldIndex && !initial){ return; }
+        
+        perPage = me.getThumbsPerPage();
+        totalThumbs = thumbs.getCount();
+        //all thumbs fit on one page ...
+        if (perPage >= totalThumbs){ return; }
+        
+        if (!initial){
+            //hide existing thumbs
+            startAt = oldIndex * perPage;
+            l = startAt + perPage;
+            for (i = startAt; i < l; i++){
+                thumb = thumbs.item(i);
+                if (!thumb){ break; }
+                thumb.hide();
+            }
+        }
+        
+        startAt = newIndex * perPage;
+        l = startAt + perPage;
+        for (i = startAt; i < l; i++){
+            thumb = thumbs.item(i);
+            if (!thumb){ break; }
+            thumb.show();
+        }
+        
+        //at first page, nothing previous
+        me.navPrevThumbEl.setVisible(newIndex !== 0);
+        //at last page, nothing following
+        me.navNextThumbEl.setVisible(l < totalThumbs);
+        
+        me.thumbPage = newIndex;
     },
     
     /**

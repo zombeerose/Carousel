@@ -3,9 +3,14 @@
  */
 .dvp-carousel {
 	border: 1px solid #D7D7D7;
+	max-width: 610px !important;
+	min-width: 340px !important;
 	position: relative;
 }
 
+/* -------------------------------------- */
+/* -------------- SLIDES ---------------- */
+/* -------------------------------------- */
 .dvp-carousel .dvp-carousel-slide {
 	height: 100%;
 	position: absolute;
@@ -14,29 +19,66 @@
 	z-index: 0;
 }
 
+.dvp-carousel .dvp-carousel-slide-wrapper,
 .dvp-carousel .dvp-carousel-slide img {
 	height: 100%;
 	width: 100%;
 }
 
-.dvp-carousel .dvp-carousel-crumb-wrapper {
-	display: block;
-	height: 0;
-	position: relative;
-	text-align: center;
-	top: -35px;
+/* -------------------------------------- */
+/* -------------- FOOTER ---------------- */
+/* -------------------------------------- */
+.dvp-carousel .dvp-carousel-footer {
+    display: block;
+    height: 0;
+    position: relative;
+    text-align: center;
 }
 
-.dvp-carousel .dvp-carousel-crumb-buttons {
-	background: transparent;
-	padding: 4px;
-	z-index: 100;
-}
-
-.dvp-carousel .dvp-carousel-crumb-buttons-pretty {
-    border: 1px solid #D7D7D7;
-    border-radius: 4px; /* 20px */
+.dvp-carousel .dvp-carousel-thumb-text {
+	background-color: #EEE;
+	
+    /* experimental */
+    background-image: -moz-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -ms-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -o-linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -webkit-linear-gradient(0deg, #F0F0F0, #D7D7D7); 
+    background-image: linear-gradient(0deg, #F0F0F0, #D7D7D7);
     
+    bottom: 0;
+    color: #333;
+    font-size: 11px;
+    height: 16px;
+    margin: 3px;
+    overflow: hidden;
+    position: absolute;
+    text-align: center;
+    text-overflow: ellipsis;
+    width: 94px; /* = thumb-fg */
+}
+
+.dvp-carousel .text-only img {
+	display: none;
+	visibility: hidden;
+}
+
+.dvp-carousel .text-only .dvp-carousel-thumb-text {
+	background: #FFF;
+	background-image: none;
+    height: 61px; /* = thumb-fg */
+    top: 0;
+}
+
+.dvp-carousel .dvp-carousel-thumb-ct,
+.dvp-carousel .text-only .dvp-carousel-thumb-ct {
+    background: transparent;
+    display: inline-block;
+    padding: 4px;
+    position: relative;
+    z-index: 100;
+}
+
+.dvp-carousel .dvp-carousel-thumb-ct-pretty {
     background-color: #D7D2D2;
     /* experimental */
     /* 98E4FF */
@@ -47,74 +89,145 @@
     background-image: linear-gradient(0deg, #F0F0F0, #D7D7D7);
 }
 
-.dvp-carousel .dvp-carousel-crumb-buttons,
-.dvp-carousel .dvp-carousel-crumb-buttons a {
+.dvp-carousel .dvp-carousel-thumb-nav-prev,
+.dvp-carousel .dvp-carousel-thumb-nav-next {
+	background-image: url(../images/carousel/nav-sprite.png);
 	display: inline-block;
-	position: relative;
+	height: 16px;
+	width: 12px;
 }
 
-.dvp-carousel .dvp-carousel-crumb {
-    background: url(../images/carousel/bullet_black.gif) no-repeat;
-    height: 16px;
-    width: 16px;
-    vertical-align: middle;
+.dvp-carousel .dvp-carousel-thumb-nav-prev {
+    background-position: -36px -8px;
 }
 
-.dvp-carousel .dvp-carousel-crumb-active {
-    background: url(../images/carousel/bullet_orange.gif) no-repeat;
+.dvp-carousel .dvp-carousel-thumb-nav-prev-over {
+    background-position: -68px -8px;
 }
 
-.dvp-carousel .dvp-carousel-crumb-over{
-    background: url(../images/carousel/bullet_yellow.gif) no-repeat;
+.dvp-carousel .dvp-carousel-thumb-nav-next {
+    background-position: -48px -40px;
 }
 
-.dvp-carousel .dvp-carousel-crumb-thumb {
+.dvp-carousel .dvp-carousel-thumb-nav-next-over {
+    background-position: -80px -40px;
+}
+
+.dvp-carousel .dvp-carousel-thumb,
+.dvp-carousel .dvp-carousel-hover {
+	cursor: pointer;
 	display: inline-block;
-	height: 60px;
-	padding: 3px;
-	position: relative;
-	width: 100px;
-	z-index: 1000;
-}
-
-.dvp-carousel .dvp-carousel-crumb-thumb-hover {
-	display: none;
-    height: 60px;
     padding: 3px;
-    position: absolute;
-    top: 0;
-    width: 100px;
+    position: relative;
+    vertical-align: middle;
     z-index: 1000;
 }
 
-.dvp-carousel .dvp-carousel-crumb-thumb-inner {
-	display: block;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
+.dvp-carousel .dvp-carousel-thumb-inner,
+.dvp-carousel .dvp-carousel-hover-inner {
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-thumb-bg,
+.dvp-carousel .dvp-carousel-hover-bg {
+    border-radius: 4px;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.dvp-carousel .dvp-carousel-thumb-fg,
+.dvp-carousel .dvp-carousel-hover-fg {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+/* ----- SMALL ----- */
+.dvp-carousel .footer-small {
+    top: -35px;
+}
+
+.dvp-carousel .footer-small .dvp-carousel-thumb-ct-pretty {
+    border-radius: 4px; /* 20px */
+}
+
+.dvp-carousel .footer-small .dvp-carousel-thumb {
+    height: 16px;
+    width: 16px;
+}
+
+.dvp-carousel .footer-small .dvp-carousel-thumb-fg {
+    background: url(../images/carousel/bullet_black.gif) no-repeat;
+    height: 16px;
+    width: 16px;
+}
+
+.dvp-carousel .footer-small .dvp-carousel-thumb-active .dvp-carousel-thumb-fg {
+    background: url(../images/carousel/bullet_orange.gif) no-repeat;
+}
+
+.dvp-carousel .footer-small .dvp-carousel-thumb-over .dvp-carousel-thumb-fg {
+    background: url(../images/carousel/bullet_yellow.gif) no-repeat !important;
+}
+
+/* ----- LARGE ----- */
+.dvp-carousel .footer-large {
+    top: -75px; /* = thumb-ct.height */
+}
+
+.dvp-carousel .footer-large .dvp-carousel-thumb-ct {
+	height: 75px; /* thumb.height + (thumb-ct.padding * 2) */
+	overflow: hidden;
+	white-space: nowrap;
 	width: 100%;
 }
 
-.dvp-carousel .dvp-carousel-crumb-thumb-bg {
-	background-color: #EEE;
-	border-radius: 4px;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
+.dvp-carousel .footer-large .dvp-carousel-thumb,
+.dvp-carousel .dvp-carousel-hover {
+    height: 67px;
+    margin: 0 4px 4px 4px;
+    width: 100px;
 }
 
-.dvp-carousel .dvp-carousel-crumb-thumb img {
-	height: 54px; /* image height - (margin * 2) */
-	left: 0;
-	margin: 3px;
-	position: absolute;
-	top: 0;
-	width: 94px; /* image width - (margin * 2) */
+.dvp-carousel .footer-large .dvp-carousel-thumb-bg,
+.dvp-carousel .dvp-carousel-hover-bg {
+    background-color: #FFF;
 }
 
+.dvp-carousel .footer-large .dvp-carousel-thumb-fg,
+.dvp-carousel .dvp-carousel-hover-fg {
+    height: 61px; /* thumb.height - (margin * 2) */
+    margin: 3px;
+    width: 94px; /* thumb.width - (margin * 2) */
+}
+
+.dvp-carousel .footer-large .dvp-carousel-thumb-active .dvp-carousel-thumb-bg {
+	background-color: #AAA;
+}
+
+.dvp-carousel .footer-large .dvp-carousel-thumb-over .dvp-carousel-thumb-bg {
+	background-color: #98E4FF !important;
+	filter: alpha(opacity=50);
+	opacity: .5;
+}
+
+/* ----- HOVER ----- */
+.dvp-carousel .dvp-carousel-hover {
+    display: none;
+}
+
+
+/* -------------------------------------- */
+/* -----------------TEXT----------------- */
+/* -------------------------------------- */
 .dvp-carousel .dvp-carousel-text,
 .dvp-carousel .dvp-carousel-text-bg {
 	color: #EEE;
@@ -157,21 +270,21 @@
 }
 
 .dvp-carousel .dvp-carousel-text-bl {
-	bottom: 40px;
+	bottom: 75px; /* large footer.top */
 	left: 0;
 	text-align: left;
 	width: 80%;
 }
 
 .dvp-carousel .dvp-carousel-text-bc {
-    bottom: 40px;
+    bottom: 75px; /* large footer.top */
     left: 0;
     text-align: center;
     width: 100%;
 }
 
 .dvp-carousel .dvp-carousel-text-br {
-	bottom: 40px;
+	bottom: 75px; /* large footer.top */
 	right: 0;
 	text-align: right;
 	width: 80%;
@@ -183,6 +296,9 @@
 	width: 100%;
 }
 
+/* -------------------------------------- */
+/* ----------------TIMER----------------- */
+/* -------------------------------------- */
 .dvp-carousel .dvp-carousel-timer {
 	position: absolute;
 	right: 5px;
@@ -190,19 +306,62 @@
 	z-index: 1;
 }
 
-.dvp-carousel .dvp-carousel-nav {
-	background-image: url(../images/carousel/arrow-sprite.png);
-	bottom: 0;
+/* -------------------------------------- */
+/* ------------------NAV----------------- */
+/* -------------------------------------- */
+.dvp-carousel .dvp-carousel-nav-ct {
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	z-index: 1;
+}
+
+.dvp-carousel .dvp-carousel-nav,
+.dvp-carousel .dvp-carousel-nav-bg {
 	height: 32px;
 	margin: 5px;
 	position: absolute;
 	width: 32px;
-	z-index: 100;
 }
 
+.dvp-carousel .dvp-carousel-nav {
+    background-image: url(../images/carousel/nav-sprite.png);
+    z-index: 100;
+}
+
+.dvp-carousel .dvp-carousel-nav-bg {
+    background-color: #000;
+    color: transparent;
+    /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99333333, endColorstr=#99DDDDDD); /* IE8 and earlier */
+    /* These three lines are for transparency in all browsers. */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+    filter: alpha(opacity=40);
+    opacity:.4;
+	z-index: 1;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev {
+    background-position: -32px 0px;
+    left: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-prev-over {
+    background-position: 0px 0px;
+}
+
+.dvp-carousel .dvp-carousel-nav-next {
+    background-position: -32px -32px;
+    right: 0;
+}
+
+.dvp-carousel .dvp-carousel-nav-next-over {
+    background-position: 0px -32px;
+}
+
+/* OLD */
 .dvp-carousel .dvp-carousel-nav-prev-hor {
 	background-position: -32px 0px;
-	bottom: 0;
+	bottom: 50%;
     left: 0;
 }
 
@@ -212,7 +371,7 @@
 
 .dvp-carousel .dvp-carousel-nav-next-hor {
 	background-position: -32px -32px;
-	bottom: 0;
+	bottom: 50%;
 	right: 0;
 }
 

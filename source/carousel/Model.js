@@ -16,9 +16,10 @@ Ext.define('Ext.ux.carousel.Model', {
         {name: 'image_alt', defaultValue: null},
         {name: 'image_animation', type: 'bool', defaultValue: true},
         {name: 'text', defaultValue: null},
-        {name: 'text_position', defaultValue: 'tl'},
+        {name: 'text_position', defaultValue: 'bc'},
         {name: 'text_style', defaultValue: null},
         {name: 'text_animation', type: 'bool', defaultValue: true},
+        {name: 'thumb_text', defaultValue: null},
         {name: 'url', defaultValue: null}
     ]
 }); //eo class
