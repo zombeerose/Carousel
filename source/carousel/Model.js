@@ -11,15 +11,11 @@ Ext.define('Ext.ux.carousel.Model', {
     //configurables
     fields: [
         {name: 'id', defaultValue: null, type: 'int', useNull:true},
-        {name: 'image_src', defaultValue: null},
-        {name: 'image_title', defaultValue: null},
-        {name: 'image_alt', defaultValue: null},
-        {name: 'image_animation', type: 'bool', defaultValue: true},
-        {name: 'text', defaultValue: null},
-        {name: 'text_position', defaultValue: 'bc'},
-        {name: 'text_style', defaultValue: null},
-        {name: 'text_animation', type: 'bool', defaultValue: true},
-        {name: 'thumb_text', defaultValue: null},
-        {name: 'url', defaultValue: null}
-    ]
+        {name: 'interval', type: 'int', defaultValue: 10000}
+    ],
+    
+    hasMany: {
+        model: 'Ext.ux.carousel.slide.Model',
+        name: 'slides'
+    }
 }); //eo class

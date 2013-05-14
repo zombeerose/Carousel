@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Carousel Example</title>
+
+    <link href="http://cdn.sencha.io/ext-4.1.1-gpl/resources/css/ext-all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../resources/css/carousel.css" />
+    <style>
+    h1 {
+    	font-size: large;
+    }
+    
+    .cbox {
+    	border: 1px solid #DDD;
+    	display: inline-block;
+    	height: 325px;
+    	margin: 10px 0 0 10px;
+    	padding: 10px;
+    }
+    </style>
+    
+    <script src="http://cdn.sencha.io/ext-4.1.1-gpl/ext-all.js"></script>
+    
+    <script src="../source/carousel/Model.js"></script>
+    <script src="../source/carousel/slide/Model.js"></script>
+    <script src="../source/carousel/Store.js"></script>
+    <script src="../source/carousel/View.js"></script>
+    
+    <script type="text/javascript">
+Ext.onReady(function(){
+    Ext.create('Ext.ux.carousel.View',{
+        height: 250,
+        sourceEl: 'default',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        sourceEl: 'autostart',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showFooterAlways: true,
+        sourceEl: 'footer',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showNavigationAlways: true,
+        sourceEl: 'navigation',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showThumbnails: true,
+        sourceEl: 'thumbnail',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showTimer: false,
+        sourceEl: 'timer',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showThumbnails: true,
+        sourceEl: 'thumbtext',
+        thumbTextOnly: true,
+        width: 400
+    });
+
+    var model = new Ext.ux.carousel.Model();
+    model.set({ id:1, interval: 20000 });
+    model
+    	.slides()
+    	.add([
+    	      { id: 4, carousel_id: 1, image_src: 'images/yosemite.jpg', text: 'The famous national park' },
+    	      { id: 3, carousel_id: 1, image_src: 'images/winter.jpg', text: 'The winter clearing' },
+    	      { id: 2, carousel_id: 1, image_src: 'images/mountain.jpg', text: 'The greenest mountain' },
+    	      { id: 1, carousel_id: 1, image_src: 'images/castle.jpg', text: 'The fortress of Sir Carousel' }
+	    ]);
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        model: model,
+        renderTo: 'model',
+        width: 400
+    });
+});
+    </script>
+</head>
+<body>
+    <h1>Carousel Examples</h1>
+    
+    <div class="cbox">
+	    <h2>Default config</h2>
+	    <div id="default" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain">
+	        <img src="images/winter.jpg" slideText="The winter clearing">
+	        <img src="images/yosemite.jpg" slideText="The famous national park">
+	    </div>
+	    <pre>
+	    
+	    
+	    </pre>
+	</div>
+
+    <div class="cbox">
+        <h2>Auto Start</h2>
+        <div id="autostart" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+            <img src="images/mountain.jpg" slideText="The greenest mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing">
+            <img src="images/yosemite.jpg" slideText="The famous national park">
+        </div>
+        <pre>
+        autoStart: true
+        
+        </pre>
+    </div>
+        
+        
+    <div class="cbox">
+        <h2>Footer</h2>
+        <div id="footer" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+            <img src="images/mountain.jpg" slideText="The greenest mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing">
+            <img src="images/yosemite.jpg" slideText="The famous national park">
+        </div>
+        <pre>
+        autoStart: true,
+        showFooterAlways: true
+        </pre>
+    </div>
+        
+        
+    <div class="cbox">
+        <h2>Navigation</h2>
+        <div id="navigation" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+            <img src="images/mountain.jpg" slideText="The greenest mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing">
+            <img src="images/yosemite.jpg" slideText="The famous national park">
+        </div>
+        <pre>
+        autoStart: true,
+        showNavigationAlways: true
+        </pre>
+    </div>
+        
+        
+    <div class="cbox">
+        <h2>Thumbnails</h2>
+        <div id="thumbnail" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+            <img src="images/mountain.jpg" slideText="The greenest mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing">
+            <img src="images/yosemite.jpg" slideText="The famous national park">
+        </div>
+        <pre>
+        autoStart: true,
+        showThumbnails: true
+        </pre>
+    </div>
+        
+        
+        
+    <div class="cbox">
+        <h2>Disable Timer</h2>
+        <div id="timer" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+            <img src="images/mountain.jpg" slideText="The greenest mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing">
+            <img src="images/yosemite.jpg" slideText="The famous national park">
+        </div>
+        <pre>
+        autoStart: true,
+        showTimer: false
+        </pre>
+    </div>
+        
+        
+        
+    <div class="cbox">
+        <h2>Text Thumbs</h2>
+        <div id="thumbtext" class="carousel-ct">
+            <img src="images/castle.jpg" slideText="The fortress of Sir Carousel" thumbText="Fortress">
+            <img src="images/mountain.jpg" slideText="The greenest mountain" thumbText="Mountain">
+            <img src="images/winter.jpg" slideText="The winter clearing" thumbText="Winter">
+            <img src="images/yosemite.jpg" slideText="The famous national park" thumbText="Yosemite">
+        </div>
+        <pre>
+        autoStart: true,
+        showThumbnails: true,
+        thumbTextOnly: true
+        </pre>
+    </div>
+    
+    <div class="cbox">
+	    <h2>Model</h2>
+	    <div id="model" class="carousel-ct">
+	    </div>
+	    <pre>
+    	model: new Ext.ux.carousel.Model(...)
+	    
+	    </pre>
+	</div>
+</body>
+</html>

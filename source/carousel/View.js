@@ -46,6 +46,12 @@ Ext.define('Ext.ux.carousel.View',{
      * The number of pixels to offset the Y position of the div that displays the thumbnail when hovering over the small footer navigation.
      */
     hoverOffsetY: -70,
+    
+    /**
+     * @cfg {Ext.ux.carousel.Model} model
+     * Either the #sourceEl or #model is required.
+     */
+    
     /**
      * @cfg {String} navigationOrientation
      * Supported values include: 'h' for horizonatal/left-right, or 'v' for vertical/top-bottom
@@ -138,14 +144,14 @@ Ext.define('Ext.ux.carousel.View',{
      * Indicates if the footer is always visible.  
      * Default is false, which will only show the footer when the user hovers over the container.
      */
-    showFooterAlways: true, //TODO: false
+    showFooterAlways: false,
     /**
      * @cfg {Boolean} showThumbnails
      * {@link #showFooter} must be enabled.
      * When set to true, each slide will have a corresponding thumbnail displayed in the footer. 
      * Default is false, which will display a bullet in the footer. The corresponding thumbnail is displayed when hovering over the bullet.
      */
-    showThumbnails: true, //TODO: false
+    showThumbnails: false,
     /**
      * @cfg {Boolean} showNavigation
      * Indicates if the arrows are available for manually switching to the next slide.
@@ -174,20 +180,15 @@ Ext.define('Ext.ux.carousel.View',{
      * The amount of time in milliseconds that each slide will be visible.
      */
     slideInterval: 10000,
-    /**
-     * @cfg {String} startSlide
-     * The index of the slide to start displaying.  Zero-based.
-     */
-    startSlide: 0,
     
-    /**
-     * @cfg {Ext.data.Store} store
-     * Either the #sourceEl or #store is required.
-     */
+//    /**
+//     * @cfg {Ext.data.Store} store
+//     * Either the #sourceEl or #store is required.
+//     */
     
     /**
      * @cfg {String/HTMLElement/Ext.Element} sourceEl
-     * Either the #sourceEl or #store is required.
+     * Either the #sourceEl or #model is required.
      * The innerHTML of the sourceEl must conform to the following syntax:
      * 
      * <br>
@@ -199,6 +200,7 @@ Ext.define('Ext.ux.carousel.View',{
      *      slideText="text to display for this slide" 
      *      slideTextPosition="enum for positioning text" 
      *      slideUrl="url to load when slide is clicked" 
+     *      thumbText="optional text of thumbnail" 
      *   &gt; 
      * <br>
      *   ...next img in order of appearance
@@ -216,10 +218,10 @@ Ext.define('Ext.ux.carousel.View',{
     thumbOverCls: 'dvp-carousel-thumb-over',
     /**
      * @cfg {Boolean} thumbTextOnly
-     * Requires that {@link #showThumbnails} be enabled.
+     * Only applies if {@link #showThumbnails} is enabled.
      * When set to true, the thumbnail will display text but no image.
      */
-    thumbTextOnly: false, //TODO: false
+    thumbTextOnly: false,
     /**
      * @cfg {Number} timerInterval
      * The amount of time in milliseconds for running the timer update task.
@@ -273,13 +275,13 @@ Ext.define('Ext.ux.carousel.View',{
          * @property slideIndex
          * @type Number
          */
-        me.slideIndex = me.startSlide;
+        me.slideIndex = 0;
         
         /**
-         * @property thumbPage
+         * @property page
          * @type Number
          */
-        me.thumbPage = 0;
+        me.page = 0;
         
         /**
          * @property timerCnt
@@ -306,8 +308,8 @@ Ext.define('Ext.ux.carousel.View',{
         );
         
         //<debug>
-        if (!me.store && !me.sourceEl){
-            Ext.Error.raise('A store or sourceEl is required for the carousel');
+        if (!me.model && !me.sourceEl){
+            Ext.Error.raise('A model or sourceEl is required for the carousel');
         }
         //</debug>
     },
@@ -410,8 +412,10 @@ Ext.define('Ext.ux.carousel.View',{
         var me = this;
 
         if (me.sourceEl){
-            me.loadStore();
+            me.loadElement();
+//            me.loadStore();//TODO:
         }
+        me.slideInterval = me.model.get('interval');
         
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
@@ -420,20 +424,23 @@ Ext.define('Ext.ux.carousel.View',{
             showNavigation: me.showNavigation,
             showThumbnails: me.showThumbnails,
             showTimer: me.showTimer,
-            slides: me.collectData(me.store.getRange()),
+            slides: me.collectData(me.model.slides().getRange()), //me.store.getRange()),
             thumbTextOnly: me.thumbTextOnly
         });
     },
     
     /**
      * @private
-     * Used for populating the store based on the {@link #sourceEl}.
+     * Used for populating the model based on the {@link #sourceEl}.
      */
-    loadStore: function(){
+    loadElement: function(){
         var me = this,
-            store = Ext.create('Ext.ux.carousel.Store'),
+            model = Ext.create('Ext.ux.carousel.Model'),
             el = Ext.get(me.sourceEl),
-            images, id;
+            slides = [],
+            carouselId = 1, //the carousel.id is irrelevant when loaded from markup
+            slideId,
+            images;
             
         if (!el){
             //<debug>
@@ -442,30 +449,94 @@ Ext.define('Ext.ux.carousel.View',{
             return;
         }
         
-        id = 1;
+        model.set('id',carouselId); 
+        slideId = 1;
         function eachImg(img){
-            var text = img.getAttribute('slideText'), data;
+            var text = img.getAttribute('slideText') || '', 
+                data,
+                value,
+                model;
             
             data = {
-                id: id++,
+                id: slideId++,
+                carousel_id: carouselId,
                 image_src: img.getAttribute('src'),
                 image_alt: img.getAttribute('alt') || text,
-                image_title: img.getAttribute('title'),
-                text: text,
-                text_position: img.getAttribute('slideTextPosition') || 'tl',
-                text_style: img.getAttribute('slideTextStyle'),
-                url: img.getAttribute('slideUrl')
+                text: text
             };
             
-            store.add(data);
+            //optional assignments if value is set
+            if (value = img.getAttribute('title')){
+                data.image_title = value;
+            }
+            if (value = img.getAttribute('slideTextPosition')){
+                data.text_position = value;
+            }
+            if (value = img.getAttribute('slideTextStyle')){
+                data.text_style = value;
+            }
+            if (value = img.getAttribute('slideUrl')){
+                data.url = value;
+            }
+            if (value = img.getAttribute('thumbText')){
+                data.thumb_text = value;
+            }
+            
+            model = Ext.create('Ext.ux.carousel.slide.Model');
+            model.set(data);
+            slides.push(model);
+//            store.add(data);
             img.destroy();
         }
         
         images = el.select('img');
         images.each(eachImg,me);
+        model.slides().add(slides);
         
-        me.store = store;
+        me.model = model;
     },
+    
+//    /**
+//     * @private
+//     * Used for populating the store based on the {@link #sourceEl}.
+//     */
+//    loadStore: function(){
+//        var me = this,
+//            store = Ext.create('Ext.ux.carousel.Store'),
+//            el = Ext.get(me.sourceEl),
+//            images, id;
+//            
+//        if (!el){
+//            //<debug>
+//            Ext.Error.raise('The specified sourceEl was not found!');
+//            //</debug>
+//            return;
+//        }
+//        
+//        id = 1;
+//        function eachImg(img){
+//            var text = img.getAttribute('slideText'), data;
+//            
+//            data = {
+//                id: id++,
+//                image_src: img.getAttribute('src'),
+//                image_alt: img.getAttribute('alt') || text,
+//                image_title: img.getAttribute('title'),
+//                text: text,
+//                text_position: img.getAttribute('slideTextPosition') || 'tl',
+//                text_style: img.getAttribute('slideTextStyle'),
+//                url: img.getAttribute('slideUrl')
+//            };
+//            
+//            store.add(data);
+//            img.destroy();
+//        }
+//        
+//        images = el.select('img');
+//        images.each(eachImg,me);
+//        
+//        me.store = store;
+//    },
     
     /**
      * Displays the next slide in the sequence.  If already at the last slide, then the first slide will be shown.
@@ -474,8 +545,8 @@ Ext.define('Ext.ux.carousel.View',{
         this.setSlide(this.slideIndex+1);
     },
     
-    nextThumbPage: function(){
-        this.setThumbPage(this.thumbPage+1);
+    nextPage: function(){
+        this.setPage(this.page+1);
     },
     
     onContainerClick: function(e, t){
@@ -495,13 +566,13 @@ Ext.define('Ext.ux.carousel.View',{
                 me.previous();
             }
         } else if (e.getTarget('.dvp-carousel-thumb-nav-prev')){
-            me.previousThumbPage();
+            me.previousPage();
         } else if (e.getTarget('.dvp-carousel-thumb-nav-next')){
-            me.nextThumbPage();
+            me.nextPage();
         } else {
             //assumes any other clicks were on the actual slide
             index = me.slideIndex;
-            record = me.store.getAt(index);
+            record = me.model.slides().getAt(index); // me.store.getAt(index);
             url = record.get('url');
             if (!url){ return; }
             
@@ -575,7 +646,7 @@ Ext.define('Ext.ux.carousel.View',{
             img = me.hoverEl.down('img');
             if (img){
                 index = me.thumbs.indexOf(thumb);
-                record = me.store.getAt(index);
+                record = me.model.slides().getAt(index); //store.getAt(index);
                 src = record.get('image_src');
                 xy = thumb.getXY();
                 xy[0] = xy[0] + me.hoverOffsetX;
@@ -692,29 +763,34 @@ DV.log('Carousel destroy');//TODO
                 me.footerEl.hide();
             }
             
-            me.on({
-                element: 'navNextThumbEl',
-                mouseenter: me.onNavMouseOverOut,
-                mouseleave: me.onNavMouseOverOut,
-                scope: me
-            });
+            if (me.showThumbnails){
+                me.on({
+                    element: 'navNextThumbEl',
+                    mouseenter: me.onNavMouseOverOut,
+                    mouseleave: me.onNavMouseOverOut,
+                    scope: me
+                });
+                
+                me.on({
+                    element: 'navPrevThumbEl',
+                    mouseenter: me.onNavMouseOverOut,
+                    mouseleave: me.onNavMouseOverOut,
+                    scope: me
+                });
             
-            me.on({
-                element: 'navPrevThumbEl',
-                mouseenter: me.onNavMouseOverOut,
-                mouseleave: me.onNavMouseOverOut,
-                scope: me
-            });
-            
-            me.thumbs.setVisibilityMode(Ext.Element.DISPLAY).hide();
-            me.setThumbPage(me.thumbPage, true); //initial
+                me.thumbs.setVisibilityMode(Ext.Element.DISPLAY).hide();
+                me.setPage(me.page, true); //initial
+            } else {
+                me.navNextThumbEl.hide();
+                me.navPrevThumbEl.hide();
+            }
         }
         
         me.slides.hide();
         me.texts.hide();
         
         //set the initial slide
-        me.setSlide(me.startSlide, true); //initial
+        me.setSlide(me.slideIndex, true); //initial
         if (me.autoStart){
             me.start();
         }
@@ -777,14 +853,61 @@ DV.log('Carousel destroy');//TODO
         this.setSlide(this.slideIndex-1);
     },
     
-    previousThumbPage: function(){
-        this.setThumbPage(this.thumbPage-1);
+    previousPage: function(){
+        this.setPage(this.page-1);
     },
     
 //    resume: function(){
 //        this.timerTask.start();
 //        this.running = true;
 //    },
+    
+    
+    /**
+     * @private
+     * @param {Number} newIndex Zero-based
+     * @param {Boolean} initial
+     */
+    setPage: function(newIndex, initial){
+        var me = this,
+            thumbs = me.thumbs, //CompositeElement;
+            oldIndex = me.page,
+            totalThumbs, perPage, startAt, thumb, i, l;
+            
+        //no change
+        if (newIndex === oldIndex && !initial){ return; }
+        
+        perPage = me.getThumbsPerPage();
+        totalThumbs = thumbs.getCount();
+        //all thumbs fit on one page ...
+        if (perPage >= totalThumbs){ return; }
+        
+        if (!initial){
+            //hide existing thumbs
+            startAt = oldIndex * perPage;
+            l = startAt + perPage;
+            for (i = startAt; i < l; i++){
+                thumb = thumbs.item(i);
+                if (!thumb){ break; }
+                thumb.hide();
+            }
+        }
+        
+        startAt = newIndex * perPage;
+        l = startAt + perPage;
+        for (i = startAt; i < l; i++){
+            thumb = thumbs.item(i);
+            if (!thumb){ break; }
+            thumb.show();
+        }
+        
+        //at first page, nothing previous
+        me.navPrevThumbEl.setVisible(newIndex !== 0);
+        //at last page, nothing following
+        me.navNextThumbEl.setVisible(l < totalThumbs);
+        
+        me.page = newIndex;
+    },
     
     /**
      * @private
@@ -803,7 +926,7 @@ DV.log('Carousel destroy');//TODO
             
         if (newIndex === oldIndex && !initial){ return; }
         
-        record = me.store.getAt(oldIndex);
+        record = me.model.slides().getAt(oldIndex); //store.getAt(oldIndex);
         lastIndex = slides.getCount() - 1;
         if (newIndex < 0){
             newIndex = lastIndex;
@@ -844,58 +967,13 @@ DV.log('Carousel destroy');//TODO
         me.slideIndex = newIndex;
         me.timerCnt = 0;
     }, //eof setSlide
-    
-    /**
-     * @private
-     * @param {Number} newIndex Zero-based
-     * @param {Boolean} initial
-     */
-    setThumbPage: function(newIndex, initial){
-        var me = this,
-            thumbs = me.thumbs, //CompositeElement;
-            oldIndex = me.thumbPage,
-            totalThumbs, perPage, startAt, thumb, i, l;
-            
-        //no change
-        if (newIndex === oldIndex && !initial){ return; }
-        
-        perPage = me.getThumbsPerPage();
-        totalThumbs = thumbs.getCount();
-        //all thumbs fit on one page ...
-        if (perPage >= totalThumbs){ return; }
-        
-        if (!initial){
-            //hide existing thumbs
-            startAt = oldIndex * perPage;
-            l = startAt + perPage;
-            for (i = startAt; i < l; i++){
-                thumb = thumbs.item(i);
-                if (!thumb){ break; }
-                thumb.hide();
-            }
-        }
-        
-        startAt = newIndex * perPage;
-        l = startAt + perPage;
-        for (i = startAt; i < l; i++){
-            thumb = thumbs.item(i);
-            if (!thumb){ break; }
-            thumb.show();
-        }
-        
-        //at first page, nothing previous
-        me.navPrevThumbEl.setVisible(newIndex !== 0);
-        //at last page, nothing following
-        me.navNextThumbEl.setVisible(l < totalThumbs);
-        
-        me.thumbPage = newIndex;
-    },
+
     
     /**
      * Starts running the task.
      */
     start: function(){
-        if (!this.store.getCount()){
+        if (!this.model || !this.model.slides().getCount()){ //if (!this.store.getCount()){
             //<debug>
             Ext.Error.raise('Carousel store is empty!');
             //</debug>
