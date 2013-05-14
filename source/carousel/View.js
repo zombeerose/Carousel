@@ -5,14 +5,14 @@
            width: 600,
            height: 400,
            renderTo: Ext.getBody(),
-           store: Ext.create('Ext.ux.carousel.Store')
+           model: Ext.create('Ext.ux.carousel.Model')
        });
  */
 Ext.define('Ext.ux.carousel.View',{
     extend: 'Ext.container.Container',
     alias: 'widget.dvp_carousel',
     requires: [
-        'Ext.ux.carousel.Store'
+        'Ext.ux.carousel.Model'
     ],
     
     /**
@@ -180,11 +180,6 @@ Ext.define('Ext.ux.carousel.View',{
      * The amount of time in milliseconds that each slide will be visible.
      */
     slideInterval: 10000,
-    
-//    /**
-//     * @cfg {Ext.data.Store} store
-//     * Either the #sourceEl or #store is required.
-//     */
     
     /**
      * @cfg {String/HTMLElement/Ext.Element} sourceEl
@@ -413,7 +408,6 @@ Ext.define('Ext.ux.carousel.View',{
 
         if (me.sourceEl){
             me.loadElement();
-//            me.loadStore();//TODO:
         }
         me.slideInterval = me.model.get('interval');
         
@@ -424,7 +418,7 @@ Ext.define('Ext.ux.carousel.View',{
             showNavigation: me.showNavigation,
             showThumbnails: me.showThumbnails,
             showTimer: me.showTimer,
-            slides: me.collectData(me.model.slides().getRange()), //me.store.getRange()),
+            slides: me.collectData(me.model.slides().getRange()),
             thumbTextOnly: me.thumbTextOnly
         });
     },
@@ -485,7 +479,6 @@ Ext.define('Ext.ux.carousel.View',{
             model = Ext.create('Ext.ux.carousel.slide.Model');
             model.set(data);
             slides.push(model);
-//            store.add(data);
             img.destroy();
         }
         
@@ -495,48 +488,6 @@ Ext.define('Ext.ux.carousel.View',{
         
         me.model = model;
     },
-    
-//    /**
-//     * @private
-//     * Used for populating the store based on the {@link #sourceEl}.
-//     */
-//    loadStore: function(){
-//        var me = this,
-//            store = Ext.create('Ext.ux.carousel.Store'),
-//            el = Ext.get(me.sourceEl),
-//            images, id;
-//            
-//        if (!el){
-//            //<debug>
-//            Ext.Error.raise('The specified sourceEl was not found!');
-//            //</debug>
-//            return;
-//        }
-//        
-//        id = 1;
-//        function eachImg(img){
-//            var text = img.getAttribute('slideText'), data;
-//            
-//            data = {
-//                id: id++,
-//                image_src: img.getAttribute('src'),
-//                image_alt: img.getAttribute('alt') || text,
-//                image_title: img.getAttribute('title'),
-//                text: text,
-//                text_position: img.getAttribute('slideTextPosition') || 'tl',
-//                text_style: img.getAttribute('slideTextStyle'),
-//                url: img.getAttribute('slideUrl')
-//            };
-//            
-//            store.add(data);
-//            img.destroy();
-//        }
-//        
-//        images = el.select('img');
-//        images.each(eachImg,me);
-//        
-//        me.store = store;
-//    },
     
     /**
      * Displays the next slide in the sequence.  If already at the last slide, then the first slide will be shown.
@@ -572,7 +523,7 @@ Ext.define('Ext.ux.carousel.View',{
         } else {
             //assumes any other clicks were on the actual slide
             index = me.slideIndex;
-            record = me.model.slides().getAt(index); // me.store.getAt(index);
+            record = me.model.slides().getAt(index);
             url = record.get('url');
             if (!url){ return; }
             
@@ -646,7 +597,7 @@ Ext.define('Ext.ux.carousel.View',{
             img = me.hoverEl.down('img');
             if (img){
                 index = me.thumbs.indexOf(thumb);
-                record = me.model.slides().getAt(index); //store.getAt(index);
+                record = me.model.slides().getAt(index);
                 src = record.get('image_src');
                 xy = thumb.getXY();
                 xy[0] = xy[0] + me.hoverOffsetX;
@@ -926,7 +877,7 @@ DV.log('Carousel destroy');//TODO
             
         if (newIndex === oldIndex && !initial){ return; }
         
-        record = me.model.slides().getAt(oldIndex); //store.getAt(oldIndex);
+        record = me.model.slides().getAt(oldIndex);
         lastIndex = slides.getCount() - 1;
         if (newIndex < 0){
             newIndex = lastIndex;
@@ -973,9 +924,9 @@ DV.log('Carousel destroy');//TODO
      * Starts running the task.
      */
     start: function(){
-        if (!this.model || !this.model.slides().getCount()){ //if (!this.store.getCount()){
+        if (!this.model || !this.model.slides().getCount()){
             //<debug>
-            Ext.Error.raise('Carousel store is empty!');
+            Ext.Error.raise('Carousel model is empty!');
             //</debug>
             return;
         }
