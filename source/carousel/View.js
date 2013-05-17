@@ -1,6 +1,6 @@
 /**
  * 
- * @version 0.2
+ * @version 0.3
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
@@ -14,7 +14,8 @@ Ext.define('Ext.ux.carousel.View',{
     extend: 'Ext.container.Container',
     alias: 'widget.dvp_carousel',
     requires: [
-        'Ext.ux.carousel.Model'
+        'Ext.ux.carousel.Model',
+        'Ext.ux.carousel.slide.Model'
     ],
     
     /**
@@ -37,6 +38,32 @@ Ext.define('Ext.ux.carousel.View',{
         { name: 'texts', select: '.dvp-carousel-text' },
         { name: 'thumbs', select: '.dvp-carousel-thumb' }
     ],
+    
+    /**
+     * @cfg {Object} fieldNames
+     * An object containing properties which correspond to the field name used by the models. 
+     * If you rename the model fields, you can specify the custom field names here that are used for the renderTpl. 
+     * By default, this object takes the following form:
+     * <pre><code>
+    {
+        id: 'id',
+        delay: 'delay',
+        slide_id: 'id',
+        slide_carousel_id: 'carousel_id',
+        slide_img_url: 'image_url',
+        slide_img_title: 'image_title',
+        slide_img_alt: 'image_alt',
+        slide_img_animate: 'image_animation',
+        slide_text: 'txt',
+        slide_text_pos: 'txt_position',
+        slide_text_style: 'txt_style',
+        slide_text_animation: 'txt_animation',
+        slide_text_thumb: 'txt_thumb',
+        slide_link_url: 'link_url'
+    }
+     * </code></pre>
+     * 
+     */
     
     /**
      * @cfg {Number} hoverOffsetX
@@ -68,73 +95,6 @@ Ext.define('Ext.ux.carousel.View',{
      * The default of true will pause the current timer/rotation on the current slide if the carousel is running.
      */
     pauseOnHover: true,
-    
-    renderTpl: [
-        '{%this.renderContainer(out,values)%}',
-        '<div class="dvp-carousel-slide-wrapper">',
-            '<tpl for="slides">',
-            '<div class="dvp-carousel-slide">',
-                '<tpl if="txt">',
-                '<div class="dvp-carousel-text dvp-carousel-text-{txt_position}" style="{txt_style}">{txt}</div>',
-                '<div class="dvp-carousel-text-bg dvp-carousel-text-{txt_position}">{txt}</div>',
-                '</tpl>',
-                '<tpl if="image_url">',
-                '<img src="{image_url}" alt="{image_alt}" title="{image_title}">',
-                '</tpl>',
-            '</div>',
-            '</tpl>',
-        '</div>',
-        
-        '<tpl if="showTimer">',
-            '<div id="{id}-timerEl" class="dvp-carousel-timer"></div>', //uses Ext.draw.Component
-        '</tpl>',
-        
-        '<tpl if="showFooter">',
-            '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="thumbTextOnly">text-only</tpl>">',
-                '<div class="dvp-carousel-thumb-ct',
-                    '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
-                '">',
-                '<a id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev" href="#"></a>',
-                '<tpl for="slides">',
-                    '<div class="dvp-carousel-thumb {[xindex === 1 ? "thumb-first" : ""]}{[xindex === xcount ? "thumb-last" : ""]}">',
-                        '<div class="dvp-carousel-thumb-inner">',
-                            '<div class="dvp-carousel-thumb-bg"></div>',
-                            '<tpl if="parent.showThumbnails">',
-                                '<img class="dvp-carousel-thumb-fg" src="{image_url}" alt="{image_alt}" title="{image_title}">',
-                                '<tpl if="txt_thumb">',
-                                    '<div class="dvp-carousel-thumb-text">{txt_thumb}</div>',
-                                '</tpl>',
-                            '<tpl else>',
-                                '<a href="#" class="dvp-carousel-thumb-fg"></a>',
-                            '</tpl>',
-                        '</div>',
-                    '</div>',
-                '</tpl>',
-                '<a id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next" href="#"></a>',
-                '</div>',
-                
-                '<div id="{id}-hoverEl" class="dvp-carousel-hover">',
-                    '<div class="dvp-carousel-hover-inner">',
-                        '<div class="dvp-carousel-hover-bg"></div>',
-                        '<img class="dvp-carousel-hover-fg" src="">',
-                    '</div>',
-                '</div>',
-                
-//                //TODO: start/pause button
-                
-            '</div>',
-        '</tpl>',
-        
-        '<tpl if="showNavigation">',
-            '<div id="{id}-navEl" class="dvp-carousel-nav-ct">',
-                '<a id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev" href="#"></a>',
-                '<div class="dvp-carousel-nav-bg dvp-carousel-nav-prev"></div>',
-                '<a id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next" href="#"></a>',
-                '<div class="dvp-carousel-nav-bg dvp-carousel-nav-next"></div>',
-            '</div>',
-        '</tpl>'
-    ],
-    
     /**
      * @cfg {Boolean} showFooter
      * Indicates if the footer is visible that displays the navigation links for the other slides.
@@ -258,6 +218,25 @@ Ext.define('Ext.ux.carousel.View',{
     constructor: function(config){
         var me = this;
         
+        me.fieldNames = Ext.applyIf(me.fieldNames || {}, {
+            id: 'id',
+            delay: 'delay',
+            slide_id: 'id',
+            slide_carousel_id: 'carousel_id',
+            slide_img_url: 'image_url',
+            slide_img_title: 'image_title',
+            slide_img_alt: 'image_alt',
+            slide_img_animate: 'image_animation',
+            slide_text: 'txt',
+            slide_text_pos: 'txt_position',
+            slide_text_style: 'txt_style',
+            slide_text_animate: 'txt_animation',
+            slide_text_thumb: 'txt_thumb',
+            slide_link_url: 'link_url'
+        });
+        
+        me.buildRenderTpl();
+        
         /**
          * @property timerTask
          * @type Ext.util.TaskRunner.Task
@@ -309,6 +288,79 @@ Ext.define('Ext.ux.carousel.View',{
             Ext.Error.raise('A model or sourceEl is required for the carousel');
         }
         //</debug>
+    },
+    
+    /**
+     * @private
+     */
+    buildRenderTpl: function(){
+        var fields = this.fieldNames;
+        
+        this.renderTpl = [
+            '{%this.renderContainer(out,values)%}',
+            '<div class="dvp-carousel-slide-wrapper">',
+                '<tpl for="slides">',
+                '<div class="dvp-carousel-slide">',
+                    '<tpl if="', fields.slide_text, '">',
+                    '<div class="dvp-carousel-text dvp-carousel-text-{', fields.slide_text_pos, '}" style="{', fields.slide_text_style, '}">{', fields.slide_text, '}</div>',
+                    '<div class="dvp-carousel-text-bg dvp-carousel-text-{', fields.slide_text_pos, '}">{', fields.slide_text, '}</div>',
+                    '</tpl>',
+                    '<tpl if="', fields.slide_img_url, '">',
+                    '<img src="{', fields.slide_img_url, '}" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
+                    '</tpl>',
+                '</div>',
+                '</tpl>',
+            '</div>',
+            
+            '<tpl if="showTimer">',
+                '<div id="{id}-timerEl" class="dvp-carousel-timer"></div>', //uses Ext.draw.Component
+            '</tpl>',
+            
+            '<tpl if="showFooter">',
+                '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="thumbTextOnly">text-only</tpl>">',
+                    '<div class="dvp-carousel-thumb-ct',
+                        '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
+                    '">',
+                    '<a id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev" href="#"></a>',
+                    '<tpl for="slides">',
+                        '<div class="dvp-carousel-thumb {[xindex === 1 ? "thumb-first" : ""]}{[xindex === xcount ? "thumb-last" : ""]}">',
+                            '<div class="dvp-carousel-thumb-inner">',
+                                '<div class="dvp-carousel-thumb-bg"></div>',
+                                '<tpl if="parent.showThumbnails">',
+                                    '<img class="dvp-carousel-thumb-fg" src="{', fields.slide_img_url, '}" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
+                                    '<tpl if="', fields.slide_text_thumb, '">',
+                                        '<div class="dvp-carousel-thumb-text">{', fields.slide_text_thumb, '}</div>',
+                                    '</tpl>',
+                                '<tpl else>',
+                                    '<a href="#" class="dvp-carousel-thumb-fg"></a>',
+                                '</tpl>',
+                            '</div>',
+                        '</div>',
+                    '</tpl>',
+                    '<a id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next" href="#"></a>',
+                    '</div>',
+                    
+                    '<div id="{id}-hoverEl" class="dvp-carousel-hover">',
+                        '<div class="dvp-carousel-hover-inner">',
+                            '<div class="dvp-carousel-hover-bg"></div>',
+                            '<img class="dvp-carousel-hover-fg" src="">',
+                        '</div>',
+                    '</div>',
+                    
+    //                //TODO: start/pause button
+                    
+                '</div>',
+            '</tpl>',
+            
+            '<tpl if="showNavigation">',
+                '<div id="{id}-navEl" class="dvp-carousel-nav-ct">',
+                    '<a id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev" href="#"></a>',
+                    '<div class="dvp-carousel-nav-bg dvp-carousel-nav-prev"></div>',
+                    '<a id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next" href="#"></a>',
+                    '<div class="dvp-carousel-nav-bg dvp-carousel-nav-next"></div>',
+                '</div>',
+            '</tpl>'
+        ];
     },
     
     // @inheritdoc
@@ -411,7 +463,7 @@ Ext.define('Ext.ux.carousel.View',{
         if (me.sourceEl){
             me.loadElement();
         }
-        me.slideInterval = me.model.get('delay');
+        me.slideInterval = me.model.get(me.fieldNames.delay);
         
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
@@ -431,6 +483,7 @@ Ext.define('Ext.ux.carousel.View',{
      */
     loadElement: function(){
         var me = this,
+            fields = me.fieldNames,
             model = Ext.create('Ext.ux.carousel.Model'),
             el = Ext.get(me.sourceEl),
             slides = [],
@@ -449,33 +502,31 @@ Ext.define('Ext.ux.carousel.View',{
         slideId = 1;
         function eachImg(img){
             var text = img.getAttribute('slideText') || '', 
-                data,
+                data = {},
                 value,
                 model;
             
-            data = {
-                id: slideId++,
-                carousel_id: carouselId,
-                image_url: img.getAttribute('src'),
-                image_alt: img.getAttribute('alt') || text,
-                txt: text
-            };
+            data[fields.slide_id] = slideId++;
+            data[fields.slide_carousel_id] = carouselId;
+            data[fields.slide_img_url] = img.getAttribute('src');
+            data[fields.slide_img_alt] = img.getAttribute('alt') || text;
+            data[fields.slide_text] = text;
             
             //optional assignments if value is set
             if (value = img.getAttribute('title')){
-                data.image_title = value;
+                data[fields.slide_img_title] = value;
             }
             if (value = img.getAttribute('slideTextPosition')){
-                data.txt_position = value;
+                data[fields.slide_text_pos] = value;
             }
             if (value = img.getAttribute('slideTextStyle')){
-                data.txt_style = value;
+                data[fields.slide_text_style] = value;
             }
             if (value = img.getAttribute('slideUrl')){
-                data.link_url = value;
+                data[fields.slide_link_url] = value;
             }
             if (value = img.getAttribute('thumbText')){
-                data.txt_thumb = value;
+                data[fields.slide_text_thumb] = value;
             }
             
             model = Ext.create('Ext.ux.carousel.slide.Model',data);
@@ -525,7 +576,7 @@ Ext.define('Ext.ux.carousel.View',{
             //assumes any other clicks were on the actual slide
             index = me.slideIndex;
             record = me.model.slides().getAt(index);
-            url = record.get('link_url');
+            url = record.get(me.fieldNames.slide_link_url);
             if (!url){ return; }
             
             me.fireEvent('openurl',me,url);
@@ -602,7 +653,7 @@ Ext.define('Ext.ux.carousel.View',{
             if (img){
                 index = me.thumbs.indexOf(thumb);
                 record = me.model.slides().getAt(index);
-                src = record.get('image_url');
+                src = record.get(me.fieldNames.slide_img_url);
                 xy = thumb.getXY();
                 xy[0] = xy[0] + me.hoverOffsetX;
                 xy[1] = xy[1] + me.hoverOffsetY;
@@ -871,6 +922,7 @@ DV.log('Carousel destroy');//TODO
      */
     setSlide: function(newIndex, initial){
         var me = this,
+            fields = me.fieldNames,
             thumbs = me.thumbs, //CompositeElement
             slides = me.slides, //CompositeElement
             texts = me.texts, //CompositeElement
@@ -909,10 +961,10 @@ DV.log('Carousel destroy');//TODO
         }
         
         //show the next one
-        slides.item(newIndex).setVisible(true,record.get('image_animation'));
+        slides.item(newIndex).setVisible(true,record.get(fields.slide_img_animate));
         item = texts.item(newIndex);
         if (item){
-            item.setVisible(true,record.get('txt_animation'));
+            item.setVisible(true,record.get(fields.slide_text_animate));
         }
 
         if (me.showFooter){
