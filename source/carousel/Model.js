@@ -11,7 +11,7 @@ Ext.define('Ext.ux.carousel.Model', {
     //configurables
     fields: [
         {name: 'id', defaultValue: null, type: 'int', useNull:true},
-        {name: 'interval', type: 'int', defaultValue: 10000}
+        {name: 'delay', type: 'int', defaultValue: 10000}
     ],
     
     hasMany: {

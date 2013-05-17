@@ -24,7 +24,6 @@
     
     <script src="../source/carousel/Model.js"></script>
     <script src="../source/carousel/slide/Model.js"></script>
-    <script src="../source/carousel/Store.js"></script>
     <script src="../source/carousel/View.js"></script>
     
     <script type="text/javascript">
@@ -88,16 +87,22 @@ Ext.onReady(function(){
     model
     	.slides()
     	.add([
-    	      { id: 4, carousel_id: 1, image_src: 'images/yosemite.jpg', text: 'The famous national park' },
-    	      { id: 3, carousel_id: 1, image_src: 'images/winter.jpg', text: 'The winter clearing' },
-    	      { id: 2, carousel_id: 1, image_src: 'images/mountain.jpg', text: 'The greenest mountain' },
-    	      { id: 1, carousel_id: 1, image_src: 'images/castle.jpg', text: 'The fortress of Sir Carousel' }
+    	      { id: 4, carousel_id: 1, image_url: 'images/yosemite.jpg', txt: 'The famous national park' },
+    	      { id: 3, carousel_id: 1, image_url: 'images/winter.jpg', txt: 'The winter clearing' },
+    	      { id: 2, carousel_id: 1, image_url: 'images/mountain.jpg', txt: 'The greenest mountain' },
+    	      { id: 1, carousel_id: 1, image_url: 'images/castle.jpg', txt: 'The fortress of Sir Carousel' }
 	    ]);
     Ext.create('Ext.ux.carousel.View',{
         autoStart: true,
         height: 250,
         model: model,
         renderTo: 'model',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        height: 250,
+        sourceEl: 'noslides',
         width: 400
     });
 });
@@ -221,5 +226,14 @@ Ext.onReady(function(){
 	    
 	    </pre>
 	</div>
+	
+	<div class="cbox">
+		<h2>No Slides Defined</h2>
+		<div id="noslides" class="carousel-ct">
+		</div>
+		<pre>
+		...
+		
+		</pre>
 </body>
 </html>

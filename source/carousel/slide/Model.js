@@ -18,15 +18,15 @@ Ext.define('Ext.ux.carousel.slide.Model', {
     fields: [
         {name: 'id', defaultValue: null, type: 'int', useNull:true},
         {name: 'carousel_id', defaultValue: null, type: 'int', useNull:true},
-        {name: 'image_src', defaultValue: null},
+        {name: 'image_url', defaultValue: null},
         {name: 'image_title', defaultValue: ''},
         {name: 'image_alt', defaultValue: ''},
         {name: 'image_animation', type: 'bool', defaultValue: true},
-        {name: 'text', defaultValue: ''},
-        {name: 'text_position', defaultValue: 'tc'},
-        {name: 'text_style', defaultValue: null},
-        {name: 'text_animation', type: 'bool', defaultValue: true},
-        {name: 'thumb_text', defaultValue: ''},
-        {name: 'url', defaultValue: null}
+        {name: 'txt', defaultValue: ''},
+        {name: 'txt_position', defaultValue: 'tc'},
+        {name: 'txt_style', defaultValue: null},
+        {name: 'txt_animation', type: 'bool', defaultValue: true},
+        {name: 'txt_thumb', defaultValue: ''},
+        {name: 'link_url', defaultValue: null}
     ]
 }); //eo class

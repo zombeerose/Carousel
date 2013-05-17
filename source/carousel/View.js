@@ -1,5 +1,7 @@
 /**
  * 
+ * @version 0.2
+ * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
            width: 600,
@@ -72,12 +74,12 @@ Ext.define('Ext.ux.carousel.View',{
         '<div class="dvp-carousel-slide-wrapper">',
             '<tpl for="slides">',
             '<div class="dvp-carousel-slide">',
-                '<tpl if="text">',
-                '<div class="dvp-carousel-text dvp-carousel-text-{text_position}" style="{text_style}">{text}</div>',
-                '<div class="dvp-carousel-text-bg dvp-carousel-text-{text_position}">{text}</div>',
+                '<tpl if="txt">',
+                '<div class="dvp-carousel-text dvp-carousel-text-{txt_position}" style="{txt_style}">{txt}</div>',
+                '<div class="dvp-carousel-text-bg dvp-carousel-text-{txt_position}">{txt}</div>',
                 '</tpl>',
-                '<tpl if="image_src">',
-                '<img src="{image_src}" alt="{image_alt}" title="{image_title}">',
+                '<tpl if="image_url">',
+                '<img src="{image_url}" alt="{image_alt}" title="{image_title}">',
                 '</tpl>',
             '</div>',
             '</tpl>',
@@ -98,9 +100,9 @@ Ext.define('Ext.ux.carousel.View',{
                         '<div class="dvp-carousel-thumb-inner">',
                             '<div class="dvp-carousel-thumb-bg"></div>',
                             '<tpl if="parent.showThumbnails">',
-                                '<img class="dvp-carousel-thumb-fg" src="{image_src}" alt="{image_alt}" title="{image_title}">',
-                                '<tpl if="thumb_text">',
-                                    '<div class="dvp-carousel-thumb-text">{thumb_text}</div>',
+                                '<img class="dvp-carousel-thumb-fg" src="{image_url}" alt="{image_alt}" title="{image_title}">',
+                                '<tpl if="txt_thumb">',
+                                    '<div class="dvp-carousel-thumb-text">{txt_thumb}</div>',
                                 '</tpl>',
                             '<tpl else>',
                                 '<a href="#" class="dvp-carousel-thumb-fg"></a>',
@@ -409,7 +411,7 @@ Ext.define('Ext.ux.carousel.View',{
         if (me.sourceEl){
             me.loadElement();
         }
-        me.slideInterval = me.model.get('interval');
+        me.slideInterval = me.model.get('delay');
         
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
@@ -454,9 +456,9 @@ Ext.define('Ext.ux.carousel.View',{
             data = {
                 id: slideId++,
                 carousel_id: carouselId,
-                image_src: img.getAttribute('src'),
+                image_url: img.getAttribute('src'),
                 image_alt: img.getAttribute('alt') || text,
-                text: text
+                txt: text
             };
             
             //optional assignments if value is set
@@ -464,20 +466,19 @@ Ext.define('Ext.ux.carousel.View',{
                 data.image_title = value;
             }
             if (value = img.getAttribute('slideTextPosition')){
-                data.text_position = value;
+                data.txt_position = value;
             }
             if (value = img.getAttribute('slideTextStyle')){
-                data.text_style = value;
+                data.txt_style = value;
             }
             if (value = img.getAttribute('slideUrl')){
-                data.url = value;
+                data.link_url = value;
             }
             if (value = img.getAttribute('thumbText')){
-                data.thumb_text = value;
+                data.txt_thumb = value;
             }
             
-            model = Ext.create('Ext.ux.carousel.slide.Model');
-            model.set(data);
+            model = Ext.create('Ext.ux.carousel.slide.Model',data);
             slides.push(model);
             img.destroy();
         }
@@ -524,7 +525,7 @@ Ext.define('Ext.ux.carousel.View',{
             //assumes any other clicks were on the actual slide
             index = me.slideIndex;
             record = me.model.slides().getAt(index);
-            url = record.get('url');
+            url = record.get('link_url');
             if (!url){ return; }
             
             me.fireEvent('openurl',me,url);
@@ -557,6 +558,9 @@ Ext.define('Ext.ux.carousel.View',{
             me._wasRunning = me.running;
             me.pause();
         }
+        
+        //no slides - no nav
+        if (!me.model.slides().getCount()){ return; }
         
         if (me.showFooter && !me.showFooterAlways){
             me.footerEl.fadeIn();
@@ -598,7 +602,7 @@ Ext.define('Ext.ux.carousel.View',{
             if (img){
                 index = me.thumbs.indexOf(thumb);
                 record = me.model.slides().getAt(index);
-                src = record.get('image_src');
+                src = record.get('image_url');
                 xy = thumb.getXY();
                 xy[0] = xy[0] + me.hoverOffsetX;
                 xy[1] = xy[1] + me.hoverOffsetY;
@@ -879,6 +883,9 @@ DV.log('Carousel destroy');//TODO
         
         record = me.model.slides().getAt(oldIndex);
         lastIndex = slides.getCount() - 1;
+        //check for out of bounds
+        if (lastIndex < 0){ return; }
+        
         if (newIndex < 0){
             newIndex = lastIndex;
         }
@@ -905,7 +912,7 @@ DV.log('Carousel destroy');//TODO
         slides.item(newIndex).setVisible(true,record.get('image_animation'));
         item = texts.item(newIndex);
         if (item){
-            item.setVisible(true,record.get('text_animation'));
+            item.setVisible(true,record.get('txt_animation'));
         }
 
         if (me.showFooter){
