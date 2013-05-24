@@ -82,15 +82,23 @@ Ext.onReady(function(){
         width: 400
     });
 
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        sourceEl: 'startat',
+        startIndex: 2,
+        width: 400
+    });
+    
     var model = new Ext.ux.carousel.Model();
     model.set({ id:1, interval: 20000 });
     model
     	.slides()
     	.add([
-    	      { id: 4, carousel_id: 1, image_url: 'images/yosemite.jpg', txt: 'The famous national park' },
-    	      { id: 3, carousel_id: 1, image_url: 'images/winter.jpg', txt: 'The winter clearing' },
+    	      { id: 1, carousel_id: 1, image_url: 'images/castle.jpg', txt: 'The fortress of Sir Carousel' },
     	      { id: 2, carousel_id: 1, image_url: 'images/mountain.jpg', txt: 'The greenest mountain' },
-    	      { id: 1, carousel_id: 1, image_url: 'images/castle.jpg', txt: 'The fortress of Sir Carousel' }
+    	      { id: 3, carousel_id: 1, image_url: 'images/winter.jpg', txt: 'The winter clearing' },
+    	      { id: 4, carousel_id: 1, image_url: 'images/yosemite.jpg', txt: 'The famous national park' }
 	    ]);
     Ext.create('Ext.ux.carousel.View',{
         autoStart: true,
@@ -217,6 +225,21 @@ Ext.onReady(function(){
         </pre>
     </div>
     
+    <div class="cbox">
+	    <h2>Start At Index</h2>
+	    <div id="startat" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel" thumbText="Fortress">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain" thumbText="Mountain">
+	        <img src="images/winter.jpg" slideText="The winter clearing" thumbText="Winter">
+	        <img src="images/yosemite.jpg" slideText="The famous national park" thumbText="Yosemite">
+	    </div>
+	    <pre>
+	    autoStart: true,
+	    startIndex: 1
+	    
+	    </pre>
+	</div>
+
     <div class="cbox">
 	    <h2>Model</h2>
 	    <div id="model" class="carousel-ct">

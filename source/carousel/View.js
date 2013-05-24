@@ -166,6 +166,12 @@ Ext.define('Ext.ux.carousel.View',{
      */
     
     /**
+     * @cfg {Number} startIndex
+     * Specify the index of a different slide to initially display. 
+     * Defaults to 0 if not specified.
+     */
+    
+    /**
      * @cfg {String} thumbActiveCls
      */
     thumbActiveCls: 'dvp-carousel-thumb-active',
@@ -218,6 +224,9 @@ Ext.define('Ext.ux.carousel.View',{
     constructor: function(config){
         var me = this;
         
+        //apply immediately
+        Ext.apply(me,config||{});
+        
         me.fieldNames = Ext.applyIf(me.fieldNames || {}, {
             id: 'id',
             delay: 'delay',
@@ -248,18 +257,6 @@ Ext.define('Ext.ux.carousel.View',{
         });
         
         /**
-         * @property slideIndex
-         * @type Number
-         */
-        me.slideIndex = 0;
-        
-        /**
-         * @property page
-         * @type Number
-         */
-        me.page = 0;
-        
-        /**
          * @property timerCnt
          * @type Number
          */
@@ -271,7 +268,19 @@ Ext.define('Ext.ux.carousel.View',{
          */
         me.running = false;
         
-        me.callParent(arguments);
+        /**
+         * @property slideIndex
+         * @type Number
+         */
+        me.slideIndex = 0;
+        
+        /**
+         * @property page
+         * @type Number
+         */
+        me.page = 0;
+        
+        me.callParent(); //config is already applied - do NOT pass arguments
         
         me.addEvents(
             /**
@@ -705,7 +714,7 @@ DV.log('Carousel destroy');//TODO
     // @inheritdoc
     onRender: function(){ //onRender
         var me = this,
-            pageSize;
+            startIndex;
         
         me.callParent(arguments);
         
@@ -796,7 +805,14 @@ DV.log('Carousel destroy');//TODO
         me.texts.hide();
         
         //set the initial slide
+        total = me.slides.getCount();
+        startIndex = me.startIndex;
+        //bounds checking
+        if (Ext.isDefined(startIndex) && (startIndex >= 0) && (startIndex < me.slides.getCount())){
+            me.slideIndex = startIndex;
+        }
         me.setSlide(me.slideIndex, true); //initial
+        
         if (me.autoStart){
             me.start();
         }
@@ -933,7 +949,7 @@ DV.log('Carousel destroy');//TODO
             
         if (newIndex === oldIndex && !initial){ return; }
         
-        record = me.model.slides().getAt(oldIndex);
+        record = me.model.slides().getAt(newIndex);
         lastIndex = slides.getCount() - 1;
         //check for out of bounds
         if (lastIndex < 0){ return; }
