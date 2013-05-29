@@ -27,6 +27,7 @@ Ext.define('Ext.ux.carousel.slide.Model', {
         {name: 'txt_style', defaultValue: null},
         {name: 'txt_animation', type: 'bool', defaultValue: true},
         {name: 'txt_thumb', defaultValue: ''},
-        {name: 'link_url', defaultValue: null}
+        {name: 'link_url', defaultValue: null},
+        {name: 'slide_num', defaultValue: 0, type: 'int'}
     ]
 }); //eo class

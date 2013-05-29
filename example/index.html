@@ -90,8 +90,15 @@ Ext.onReady(function(){
         width: 400
     });
     
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        sourceEl: 'sorted',
+        width: 400
+    });
+    
     var model = new Ext.ux.carousel.Model();
-    model.set({ id:1, interval: 20000 });
+    model.set({ id:1, delay: 20 });
     model
     	.slides()
     	.add([
@@ -240,6 +247,21 @@ Ext.onReady(function(){
 	    </pre>
 	</div>
 
+    <div class="cbox">
+	    <h2>Sorted</h2>
+	    <div id="sorted" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel" thumbText="Fortress" slideOrder="3">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain" thumbText="Mountain" slideOrder="1">
+	        <img src="images/winter.jpg" slideText="The winter clearing" thumbText="Winter" slideOrder="2">
+	        <img src="images/yosemite.jpg" slideText="The famous national park" thumbText="Yosemite" slideOrder="0">
+	    </div>
+	    <pre>
+	    autoStart: true
+
+	    
+	    </pre>
+	</div>
+	
     <div class="cbox">
 	    <h2>Model</h2>
 	    <div id="model" class="carousel-ct">

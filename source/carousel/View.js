@@ -1,6 +1,6 @@
 /**
  * 
- * @version 0.3
+ * @version 0.4
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
@@ -60,6 +60,7 @@ Ext.define('Ext.ux.carousel.View',{
         slide_text_animation: 'txt_animation',
         slide_text_thumb: 'txt_thumb',
         slide_link_url: 'link_url'
+        slide_order: 'slide_num'
     }
      * </code></pre>
      * 
@@ -139,9 +140,10 @@ Ext.define('Ext.ux.carousel.View',{
     showTimer: true,
     /**
      * @cfg {Number} slideInterval
-     * The amount of time in milliseconds that each slide will be visible.
+     * The default amount of time in seconds that each slide will be visible. 
+     * If a {@link #model} is specified, this value is ignored, and the value of the 'delay' field is used instead. 
      */
-    slideInterval: 10000,
+    slideInterval: 10,
     
     /**
      * @cfg {String/HTMLElement/Ext.Element} sourceEl
@@ -241,7 +243,8 @@ Ext.define('Ext.ux.carousel.View',{
             slide_text_style: 'txt_style',
             slide_text_animate: 'txt_animation',
             slide_text_thumb: 'txt_thumb',
-            slide_link_url: 'link_url'
+            slide_link_url: 'link_url',
+            slide_order: 'slide_num'
         });
         
         me.buildRenderTpl();
@@ -467,12 +470,18 @@ Ext.define('Ext.ux.carousel.View',{
     
     // @inheritdoc
     initRenderData: function() {
-        var me = this;
+        var me = this,
+            slideStore;
 
+        if (me.model){
+            me.slideInterval = me.model.get(me.fieldNames.delay);
+        }
         if (me.sourceEl){
             me.loadElement();
         }
-        me.slideInterval = me.model.get(me.fieldNames.delay);
+        
+        slideStore = me.model.slides();
+        slideStore.sort(me.fieldNames.slide_order);
         
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
@@ -481,7 +490,7 @@ Ext.define('Ext.ux.carousel.View',{
             showNavigation: me.showNavigation,
             showThumbnails: me.showThumbnails,
             showTimer: me.showTimer,
-            slides: me.collectData(me.model.slides().getRange()),
+            slides: me.collectData(slideStore.getRange()),
             thumbTextOnly: me.thumbTextOnly
         });
     },
@@ -493,9 +502,9 @@ Ext.define('Ext.ux.carousel.View',{
     loadElement: function(){
         var me = this,
             fields = me.fieldNames,
-            model = Ext.create('Ext.ux.carousel.Model'),
             el = Ext.get(me.sourceEl),
-            slides = [],
+            model = Ext.create('Ext.ux.carousel.Model'),
+            models = [],
             carouselId = 1, //the carousel.id is irrelevant when loaded from markup
             slideId,
             images;
@@ -537,15 +546,18 @@ Ext.define('Ext.ux.carousel.View',{
             if (value = img.getAttribute('thumbText')){
                 data[fields.slide_text_thumb] = value;
             }
+            if (value = img.getAttribute('slideOrder')){
+                data[fields.slide_order] = value;
+            }
             
             model = Ext.create('Ext.ux.carousel.slide.Model',data);
-            slides.push(model);
+            models.push(model);
             img.destroy();
         }
         
         images = el.select('img');
         images.each(eachImg,me);
-        model.slides().add(slides);
+        model.slides().add(models);
         
         me.model = model;
     },
@@ -825,7 +837,7 @@ DV.log('Carousel destroy');//TODO
      */
     onTaskRun: function(cnt){
         var me = this,
-            total = me.slideInterval / me.timerInterval,
+            total = (me.slideInterval * 1000) / me.timerInterval,
             remainder = ++me.timerCnt % total, //NOTE the counter is incremented
             surface,
             sprite,
@@ -949,7 +961,6 @@ DV.log('Carousel destroy');//TODO
             
         if (newIndex === oldIndex && !initial){ return; }
         
-        record = me.model.slides().getAt(newIndex);
         lastIndex = slides.getCount() - 1;
         //check for out of bounds
         if (lastIndex < 0){ return; }
@@ -975,7 +986,8 @@ DV.log('Carousel destroy');//TODO
                 me.draw.surface.removeAll(true);
             }
         }
-        
+
+        record = me.model.slides().getAt(newIndex);
         //show the next one
         slides.item(newIndex).setVisible(true,record.get(fields.slide_img_animate));
         item = texts.item(newIndex);
