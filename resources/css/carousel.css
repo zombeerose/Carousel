@@ -12,6 +12,7 @@
 /* -------------- SLIDES ---------------- */
 /* -------------------------------------- */
 .dvp-carousel .dvp-carousel-slide {
+	cursor: pointer;
 	height: 100%;
 	position: absolute;
 	top: 0;
