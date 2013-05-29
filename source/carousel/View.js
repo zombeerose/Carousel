@@ -1,6 +1,6 @@
 /**
  * 
- * @version 0.4
+ * @version 0.5
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
@@ -333,7 +333,7 @@ Ext.define('Ext.ux.carousel.View',{
                     '<div class="dvp-carousel-thumb-ct',
                         '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
                     '">',
-                    '<a id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev" href="#"></a>',
+                    '<div id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev"></div>',
                     '<tpl for="slides">',
                         '<div class="dvp-carousel-thumb {[xindex === 1 ? "thumb-first" : ""]}{[xindex === xcount ? "thumb-last" : ""]}">',
                             '<div class="dvp-carousel-thumb-inner">',
@@ -344,12 +344,12 @@ Ext.define('Ext.ux.carousel.View',{
                                         '<div class="dvp-carousel-thumb-text">{', fields.slide_text_thumb, '}</div>',
                                     '</tpl>',
                                 '<tpl else>',
-                                    '<a href="#" class="dvp-carousel-thumb-fg"></a>',
+                                    '<div class="dvp-carousel-thumb-fg"></div>',
                                 '</tpl>',
                             '</div>',
                         '</div>',
                     '</tpl>',
-                    '<a id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next" href="#"></a>',
+                    '<div id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next"></div>',
                     '</div>',
                     
                     '<div id="{id}-hoverEl" class="dvp-carousel-hover">',
@@ -366,9 +366,9 @@ Ext.define('Ext.ux.carousel.View',{
             
             '<tpl if="showNavigation">',
                 '<div id="{id}-navEl" class="dvp-carousel-nav-ct">',
-                    '<a id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev" href="#"></a>',
+                    '<div id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev"></div>',
                     '<div class="dvp-carousel-nav-bg dvp-carousel-nav-prev"></div>',
-                    '<a id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next" href="#"></a>',
+                    '<div id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next"></div>',
                     '<div class="dvp-carousel-nav-bg dvp-carousel-nav-next"></div>',
                 '</div>',
             '</tpl>'
@@ -705,7 +705,7 @@ DV.log('Carousel destroy');//TODO
      * @param {HTMLElement} t
      */
     onNavMouseOverOut: function(e, t){
-        var target = e.getTarget('a',5,true), //e.getTarget('.dvp-carousel-nav',10,true),
+        var target = e.getTarget('div',5,true), //e.getTarget('.dvp-carousel-nav',10,true),
             classes = target.getAttribute('className').split(' '), //just 'class' is not valid in IE
             i, l, cls, overCls;
             

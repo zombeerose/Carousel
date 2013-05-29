@@ -13,6 +13,7 @@
 /* -------------------------------------- */
 .dvp-carousel .dvp-carousel-slide {
 	cursor: pointer;
+	cursor: alias;
 	height: 100%;
 	position: absolute;
 	top: 0;
@@ -93,6 +94,7 @@
 .dvp-carousel .dvp-carousel-thumb-nav-prev,
 .dvp-carousel .dvp-carousel-thumb-nav-next {
 	background-image: url(../images/carousel/nav-sprite.png);
+	cursor: pointer;
 	display: inline-block;
 	height: 16px;
 	width: 12px;
@@ -319,6 +321,7 @@
 
 .dvp-carousel .dvp-carousel-nav,
 .dvp-carousel .dvp-carousel-nav-bg {
+	cursor: pointer;
 	height: 32px;
 	margin: 5px;
 	position: absolute;
