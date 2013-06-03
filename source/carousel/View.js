@@ -597,6 +597,8 @@ Ext.define('Ext.ux.carousel.View',{
             //assumes any other clicks were on the actual slide
             index = me.slideIndex;
             record = me.model.slides().getAt(index);
+            if (!record){ return; }
+            
             url = record.get(me.fieldNames.slide_link_url);
             if (!url){ return; }
             
