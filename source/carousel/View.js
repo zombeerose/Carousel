@@ -481,7 +481,7 @@ Ext.define('Ext.ux.carousel.View',{
         }
         
         slideStore = me.model.slides();
-        slideStore.sort(me.fieldNames.slide_order);
+        slideStore.sort(me.fieldNames.slide_order,'ASC');
         
         return Ext.applyIf(me.callParent(arguments), {
             height: me.height,
@@ -633,8 +633,8 @@ Ext.define('Ext.ux.carousel.View',{
             me.pause();
         }
         
-        //no slides - no nav
-        if (!me.model.slides().getCount()){ return; }
+        //less than 2 slides do not require navigation or the footer
+        if (me.model.slides().getCount() < 2){ return; }
         
         if (me.showFooter && !me.showFooterAlways){
             me.footerEl.fadeIn();

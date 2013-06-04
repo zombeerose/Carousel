@@ -7,15 +7,18 @@
  */
 Ext.define('Ext.ux.carousel.Model', {
     extend: 'Ext.data.Model',
+
+    hasMany: {
+        model: 'Ext.ux.carousel.slide.Model',
+        name: 'slides'
+    },
     
-    //configurables
     fields: [
         {name: 'id', defaultValue: null, type: 'int', useNull:true},
         {name: 'delay', type: 'int', defaultValue: 10}
     ],
     
-    hasMany: {
-        model: 'Ext.ux.carousel.slide.Model',
-        name: 'slides'
-    }
+    validations: [
+        {name: 'delay', type: 'presence'}
+    ]
 }); //eo class
