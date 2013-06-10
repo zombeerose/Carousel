@@ -696,9 +696,22 @@ Ext.define('Ext.ux.carousel.View',{
     },
     
     onDestroy: function(){
+        var me = this;
+        
 DV.log('Carousel destroy');//TODO
-        Ext.destroyMembers(this,'draw','timerTask');
-        this.callParent(arguments);
+        //pending animations (delayed tasks) may cause runtime errors if they fire after we destroy
+        me.navEl && me.navEl.stopAnimation();
+        me.footerEl && me.footerEl.stopAnimation();
+        me.texts && me.texts.stopAnimation();
+        me.slides && me.slides.stopAnimation();
+        me.thumbs && me.thumbs.stopAnimation();
+        
+        if (me.timerTask){
+            me.timerTask.stop();
+        }
+        
+        Ext.destroyMembers(me,'draw','timerTask');
+        me.callParent(arguments);
     },
     
     /**
