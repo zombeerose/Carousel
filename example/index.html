@@ -13,8 +13,8 @@
     
     .cbox {
     	border: 1px solid #DDD;
-    	display: inline-block;
-    	height: 325px;
+    	float: left;
+    	height: 340px;
     	margin: 10px 0 0 10px;
     	padding: 10px;
     }
@@ -46,6 +46,34 @@ Ext.onReady(function(){
         height: 250,
         showFooterAlways: true,
         sourceEl: 'footer',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showFooterAlways: true,
+        showThumbnails: true,
+        sourceEl: 'footerthumb',
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showFooterAlways: true,
+        showThumbnails: true,
+        sourceEl: 'footertextthumb',
+        thumbTextOnly: true,
+        width: 400
+    });
+    
+    Ext.create('Ext.ux.carousel.View',{
+        autoStart: true,
+        height: 250,
+        showFooterAlways: true,
+        showThumbnails: true,
+        sourceEl: 'footerthumb1',
         width: 400
     });
     
@@ -135,8 +163,6 @@ Ext.onReady(function(){
 	        <img src="images/yosemite.jpg" slideText="The famous national park">
 	    </div>
 	    <pre>
-	    
-	    
 	    </pre>
 	</div>
 
@@ -150,11 +176,10 @@ Ext.onReady(function(){
         </div>
         <pre>
         autoStart: true
-        
         </pre>
     </div>
-        
-        
+
+
     <div class="cbox">
         <h2>Footer</h2>
         <div id="footer" class="carousel-ct">
@@ -169,8 +194,55 @@ Ext.onReady(function(){
         </pre>
     </div>
         
-        
+    
     <div class="cbox">
+	    <h2>Footer & Thumbs</h2>
+	    <div id="footerthumb" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain">
+	        <img src="images/winter.jpg" slideText="The winter clearing">
+	        <img src="images/yosemite.jpg" slideText="The famous national park">
+	    </div>
+	    <pre>
+	    autoStart: true,
+	    showFooterAlways: true,
+	    showThumbnails: true
+	    </pre>
+	</div>
+        
+    
+    <div class="cbox">
+	    <h2>Footer & Text Thumbs</h2>
+	    <div id="footertextthumb" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel" thumbText="Fortress">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain" thumbText="Mountain">
+	        <img src="images/winter.jpg" slideText="The winter clearing" thumbText="Winter">
+	        <img src="images/yosemite.jpg" slideText="The famous national park" thumbText="Yosemite">
+	    </div>
+	    <pre>
+	    autoStart: true,
+	    showFooterAlways: true,
+	    showThumbnails: true,
+	    thumbTextOnly: true
+	    </pre>
+	</div>
+    
+    
+    <div class="cbox">
+	    <h2>Footer & Thumbs - single page</h2>
+	    <div id="footerthumb1" class="carousel-ct">
+	        <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
+	        <img src="images/mountain.jpg" slideText="The greenest mountain">
+	    </div>
+	    <pre>
+	    autoStart: true,
+	    showFooter: true,
+	    showThumbnails: true
+	    </pre>
+	</div>
+	
+	
+	<div class="cbox">
         <h2>Navigation</h2>
         <div id="navigation" class="carousel-ct">
             <img src="images/castle.jpg" slideText="The fortress of Sir Carousel">
@@ -243,7 +315,6 @@ Ext.onReady(function(){
 	    <pre>
 	    autoStart: true,
 	    startIndex: 1
-	    
 	    </pre>
 	</div>
 
@@ -257,8 +328,6 @@ Ext.onReady(function(){
 	    </div>
 	    <pre>
 	    autoStart: true
-
-	    
 	    </pre>
 	</div>
 	
@@ -268,7 +337,6 @@ Ext.onReady(function(){
 	    </div>
 	    <pre>
     	model: new Ext.ux.carousel.Model(...)
-	    
 	    </pre>
 	</div>
 	
@@ -278,7 +346,6 @@ Ext.onReady(function(){
 		</div>
 		<pre>
 		...
-		
 		</pre>
 </body>
 </html>
