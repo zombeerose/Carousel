@@ -109,13 +109,6 @@ Ext.define('Ext.ux.carousel.View',{
      */
     showFooterAlways: false,
     /**
-     * @cfg {Boolean} showThumbnails
-     * {@link #showFooter} must be enabled.
-     * When set to true, each slide will have a corresponding thumbnail displayed in the footer. 
-     * Default is false, which will display a bullet in the footer. The corresponding thumbnail is displayed when hovering over the bullet.
-     */
-    showThumbnails: false,
-    /**
      * @cfg {Boolean} showNavigation
      * Indicates if the arrows are available for manually switching to the next slide.
      */
@@ -133,6 +126,19 @@ Ext.define('Ext.ux.carousel.View',{
 //     * Indicates if a play/pause element is available.
 //     */
 //    showPlay: false,
+    /**
+     * @cfg {Boolean} showThumbnails
+     * {@link #showFooter} must be enabled.
+     * When set to true, each slide will have a corresponding thumbnail displayed in the footer. 
+     * Default is false, which will display a bullet in the footer. The corresponding thumbnail is displayed when hovering over the bullet.
+     */
+    showThumbnails: false,
+    /**
+     * @cfg {Boolean} showThumbnailsAsText
+     * When true, this setting implies that {@link #showThumbnails} is enabled and that 
+     * the thumbnail will display text but no image.
+     */
+    showThumbnailsAsText: false,
     /**
      * @cfg {Boolean} showTimer
      * Indicates if a timer is displayed that provides feedback about the remaining time before the slide auto-transitions.
@@ -182,12 +188,6 @@ Ext.define('Ext.ux.carousel.View',{
      */
     thumbOverCls: 'dvp-carousel-thumb-over',
     /**
-     * @cfg {Boolean} thumbTextOnly
-     * Only applies if {@link #showThumbnails} is enabled.
-     * When set to true, the thumbnail will display text but no image.
-     */
-    thumbTextOnly: false,
-    /**
      * @cfg {Number} timerInterval
      * The amount of time in milliseconds for running the timer update task.
      */
@@ -228,6 +228,10 @@ Ext.define('Ext.ux.carousel.View',{
         
         //apply immediately
         Ext.apply(me,config||{});
+        
+        if (me.showThumbnailsAsText){
+            me.showThumbnails = true;
+        }
         
         me.fieldNames = Ext.applyIf(me.fieldNames || {}, {
             id: 'id',
@@ -329,7 +333,7 @@ Ext.define('Ext.ux.carousel.View',{
             '</tpl>',
             
             '<tpl if="showFooter">',
-                '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="thumbTextOnly">text-only</tpl>">',
+                '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="showThumbnailsAsText">text-only</tpl>">',
                     '<div class="dvp-carousel-thumb-ct',
                         '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
                     '">',
@@ -491,7 +495,7 @@ Ext.define('Ext.ux.carousel.View',{
             showThumbnails: me.showThumbnails,
             showTimer: me.showTimer,
             slides: me.collectData(slideStore.getRange()),
-            thumbTextOnly: me.thumbTextOnly
+            showThumbnailsAsText: me.showThumbnailsAsText
         });
     },
     
