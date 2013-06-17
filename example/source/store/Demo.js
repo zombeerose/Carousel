@@ -14,7 +14,7 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         }
     },{
         key: 'nav',
-        title: 'Navigation Always Visible',
+        title: 'Navigation On',
         config: {
             autoStart: true,
             showNavigationAlways: true
@@ -43,21 +43,21 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         }
     },{
         key: 'startat',
-        title: 'Custom Start Index',
+        title: 'Start Index',
         config: {
             autoStart: true,
             startIndex: 2
         }
     },{
         key: 'footer',
-        title: 'Footer Always Visible',
+        title: 'Footer On',
         config: {
             autoStart: true,
             showFooterAlways: true
         }
     },{
         key: 'footerthumb',
-        title: 'Footer Always Visible with Thumbnails',
+        title: 'Footer On / Thumbnails',
         config: {
             autoStart: true,
             showFooterAlways: true,
@@ -65,12 +65,46 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         }
     },{
         key: 'footertxt',
-        title: 'Footer Always Visible with Thumbnails as Text',
+        title: 'Footer On / Thumbnails as Text',
         config: {
             autoStart: true,
             showFooterAlways: true,
             showThumbnails: true,
             showThumbnailsAsText: true
+        }
+    },{
+        key: 'footernav',
+        title: 'Footer On / Nav On',
+        config: {
+            autoStart: true,
+            showFooterAlways: true,
+            showNavigationAlways: true
+        }
+    },{
+        key: 'footernavthumb',
+        title: 'Footer On / Nav On / Thumbnails',
+        config: {
+            autoStart: true,
+            showFooterAlways: true,
+            showNavigationAlways: true,
+            showThumbnails: true
+        }
+    },{
+        key: 'footernavtxt',
+        title: 'Footer On / Nav On / Thumbnails as Text',
+        config: {
+            autoStart: true,
+            showFooterAlways: true,
+            showNavigationAlways: true,
+            showThumbnails: true,
+            showThumbnailsAsText: true
+        }
+    },{
+        key: 'interval',
+        title: 'Slide Interval',
+        config: {
+            autoStart: true,
+            slideInterval: 30
         }
     }],
     
