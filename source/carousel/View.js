@@ -933,33 +933,25 @@ DV.log('Carousel destroy');//TODO
         perPage = me.getThumbsPerPage();
         totalThumbs = thumbs.getCount();
         //all thumbs fit on one page ...
-        if (perPage >= totalThumbs){ return; }
-        
-        if (!initial){
-            //hide existing thumbs
-            startAt = oldIndex * perPage;
+        if (perPage < totalThumbs){
+            //hide all existing thumbs
+            thumbs.hide();
+            
+            //show only the thumbs for the visible page
+            startAt = newIndex * perPage;
             l = startAt + perPage;
             for (i = startAt; i < l; i++){
                 thumb = thumbs.item(i);
                 if (!thumb){ break; }
-                thumb.hide();
+                thumb.show();
             }
+            
+            me.page = newIndex;
         }
-        
-        startAt = newIndex * perPage;
-        l = startAt + perPage;
-        for (i = startAt; i < l; i++){
-            thumb = thumbs.item(i);
-            if (!thumb){ break; }
-            thumb.show();
-        }
-        
         //at first page, nothing previous
         me.navPrevThumbEl.setVisible(newIndex !== 0);
         //at last page, nothing following
         me.navNextThumbEl.setVisible(l < totalThumbs);
-        
-        me.page = newIndex;
     },
     
     /**
