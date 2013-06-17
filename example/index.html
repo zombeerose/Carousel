@@ -19,9 +19,11 @@
     }
     </style>
     
+    
     <script src="http://cdn.sencha.io/ext-4.1.1-gpl/ext-all.js"></script>
     
     <script src="source/store/Demo.js"></script>
+    <script src="source/store/Slide.js"></script>
     
     <script src="../source/carousel/Model.js"></script>
     <script src="../source/carousel/slide/Model.js"></script>
@@ -33,9 +35,10 @@ Ext.onReady(function(){
 		obj = Ext.Object.fromQueryString(query),
 		key = obj['x'] || null,
 		slideCount = obj['s'] || 2,
-		config, record, data, store, spec, images;
+		config, demoRecord, slideRecord, demoStore, slideStore, spec, images, i;
 	
-	store = Ext.create('Ext.ux.carousel.example.store.Demo');
+	demoStore = Ext.create('Ext.ux.carousel.example.store.Demo');
+	slideStore = Ext.create('Ext.ux.carousel.example.store.Slide');
 	
 	function reloadPage(){
 		var key = Ext.ComponentQuery.query('combo[name=example]')[0].getValue(),
@@ -55,7 +58,7 @@ Ext.onReady(function(){
 		},
 		name: 'example',
 		renderTo: 'example-cbo',
-		store: store,
+		store: demoStore,
 		value: key,
 		valueField: 'key',
 		width: 400
@@ -67,7 +70,7 @@ Ext.onReady(function(){
 			'change': reloadPage,
 			buffer: 200
 		},
-		maxValue: 4,
+		maxValue: slideStore.getCount(),
 		minValue: 0,
 		name: 'slides',
 		renderTo: 'slide-nbr',
@@ -76,42 +79,31 @@ Ext.onReady(function(){
 	});
 	
 	if (key){
-		record = store.findRecord('key',key);
-		if (!record){ return; }
+		demoRecord = demoStore.findRecord('key',key);
+		if (!demoRecord){ return; }
 
 		//some generic example data
-		images = [{
-			slideText: 'The fortress of Sir Carousel',
-			src: 'images/castle.jpg',
-			tag: 'img',
-			thumbText: 'Fortress'
-		},{
-			slideText: 'The greenest mountain',
-			src: 'images/mountain.jpg',
-			tag: 'img',
-			thumbText: 'Mountain'
-		},{
-			slideText: 'The winter clearing',
-			src: 'images/winter.jpg',
-			tag: 'img',
-			thumbText: 'Winter'
-		},{
-			slideText: 'The famous national park',
-			src: 'images/yosemite.jpg',
-			tag: 'img',
-			thumbText: 'Yosemite'
-		}];
+		images = [];
+		for (i = 0; i < slideCount; i++){
+			slideRecord = slideStore.getAt(i);
+			images.push({
+				slideText: slideRecord.get('slide_text'),
+				src: slideRecord.get('src'),
+				tag: 'img',
+				thumbText: slideRecord.get('thumb_text')
+			});
+		}
 		
 		spec = {
-			children: Ext.Array.slice(images,0,slideCount),
+			children: images,
 			cls:'carousel-ct',
 			tag: 'div'
 		};
 		Ext.fly('x-container').update(Ext.DomHelper.markup(spec));
-		Ext.fly('x-title').update(record.get('title'));
-		Ext.fly('x-config').update(Ext.encode(record.get('config')));
-		if (record.get('description')){
-			Ext.fly('x-desc').update(record.get('description'));
+		Ext.fly('x-title').update(demoRecord.get('title'));
+		Ext.fly('x-config').update(Ext.encode(demoRecord.get('config')));
+		if (demoRecord.get('description')){
+			Ext.fly('x-desc').update(demoRecord.get('description'));
 		}
 		
 		config = Ext.apply({
@@ -119,7 +111,7 @@ Ext.onReady(function(){
 			sourceEl: 'x-container',
 			slides: 10,
 			width: 400
-		}, record.get('config') || {});
+		}, demoRecord.get('config') || {});
 		
 	    Ext.create('Ext.ux.carousel.View',config);
 	} else {
