@@ -414,16 +414,22 @@ Ext.define('Ext.ux.carousel.View',{
      * @return {Number}
      */
     getThumbsPerPage: function(){
-        var thumb = this.thumbs.first(),
-            ctWidth,
-            thumbWidth,
-            max = 0;
-            
+        var thumb, ctWidth, thumbWidth, max;
+        
+        //check for the cache first
+        if (Ext.isDefined(this._thumbsPerPage)){
+            return this._thumbsPerPage;
+        }
+        
+        thumb = this.thumbs.first();
+        max = 0;
         if (thumb){
             thumbWidth = thumb.getComputedWidth() + thumb.getMargin('lr');
             ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth();
             max = Math.floor(ctWidth / thumbWidth);
         }
+        //cache for performance; invalidate the cache if we resize
+        this._thumbsPerPage = max;
         
         return max;
     },
@@ -953,10 +959,10 @@ DV.log('Carousel destroy');//TODO
         //at last page, nothing following
         me.navNextThumbEl.setVisible(l < totalThumbs);
     },
-    
+
     /**
      * @private
-     * @param {Number} newIndex Zero-based.
+     * @param {Number} newIndex Zero-based
      * @param {Boolean} initial
      */
     setSlide: function(newIndex, initial){
@@ -966,9 +972,7 @@ DV.log('Carousel destroy');//TODO
             slides = me.slides, //CompositeElement
             texts = me.texts, //CompositeElement
             oldIndex = me.slideIndex,
-            record,
-            lastIndex,
-            item;
+            record, lastIndex, item, perPage, newPage;
             
         if (newIndex === oldIndex && !initial){ return; }
         
@@ -1011,6 +1015,10 @@ DV.log('Carousel destroy');//TODO
             if (item){
                 item.addCls(me.thumbActiveCls);
             }
+            //determine if the current page changed
+            perPage = me.getThumbsPerPage();
+            newPage = Math.ceil((newIndex + 1)/ perPage) - 1;
+            me.setPage(newPage);
         }
         
         me.slideIndex = newIndex;
