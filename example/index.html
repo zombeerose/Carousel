@@ -19,7 +19,6 @@
     }
     </style>
     
-    
     <script src="http://cdn.sencha.io/ext-4.1.1-gpl/ext-all.js"></script>
     
     <script src="source/store/Demo.js"></script>
@@ -101,7 +100,7 @@ Ext.onReady(function(){
 		};
 		Ext.fly('x-container').update(Ext.DomHelper.markup(spec));
 		Ext.fly('x-title').update(demoRecord.get('title'));
-		Ext.fly('x-config').update(Ext.encode(demoRecord.get('config')));
+		Ext.fly('x-config').update(Ext.encode(demoRecord.get('config')).replace(/,/g,',<br>'));
 		if (demoRecord.get('description')){
 			Ext.fly('x-desc').update(demoRecord.get('description'));
 		}
