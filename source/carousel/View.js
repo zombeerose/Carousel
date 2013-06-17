@@ -1035,7 +1035,7 @@ DV.log('Carousel destroy');//TODO
     start: function(){
         if (!this.model || !this.model.slides().getCount()){
             //<debug>
-            Ext.Error.raise('Carousel model is empty!');
+            this.update('Carousel model is empty!');
             //</debug>
             return;
         }
