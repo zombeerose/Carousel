@@ -825,9 +825,6 @@ DV.log('Carousel destroy');//TODO
                 });
             
                 me.thumbs.setVisibilityMode(Ext.Element.DISPLAY);
-                if (!me.showFooterAlways){
-                    me.thumbs.hide();
-                }
                 me.setPage(me.page, true); //initial
             } else {
                 me.navNextThumbEl.hide();
