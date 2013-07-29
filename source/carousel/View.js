@@ -35,7 +35,6 @@ Ext.define('Ext.ux.carousel.View',{
         'timerEl',
         'hoverEl',
         { name: 'slides', select: '.dvp-carousel-slide' },
-        { name: 'texts', select: '.dvp-carousel-text' },
         { name: 'thumbs', select: '.dvp-carousel-thumb' }
     ],
     
@@ -57,7 +56,6 @@ Ext.define('Ext.ux.carousel.View',{
         slide_text: 'txt',
         slide_text_pos: 'txt_position',
         slide_text_style: 'txt_style',
-        slide_text_animation: 'txt_animation',
         slide_text_thumb: 'txt_thumb',
         slide_link_url: 'link_url'
         slide_order: 'slide_num'
@@ -245,7 +243,6 @@ Ext.define('Ext.ux.carousel.View',{
             slide_text: 'txt',
             slide_text_pos: 'txt_position',
             slide_text_style: 'txt_style',
-            slide_text_animate: 'txt_animation',
             slide_text_thumb: 'txt_thumb',
             slide_link_url: 'link_url',
             slide_order: 'slide_num'
@@ -708,11 +705,9 @@ Ext.define('Ext.ux.carousel.View',{
     onDestroy: function(){
         var me = this;
         
-DV.log('Carousel destroy');//TODO
         //pending animations (delayed tasks) may cause runtime errors if they fire after we destroy
         me.navEl && me.navEl.stopAnimation();
         me.footerEl && me.footerEl.stopAnimation();
-        me.texts && me.texts.stopAnimation();
         me.slides && me.slides.stopAnimation();
         me.thumbs && me.thumbs.stopAnimation();
         
@@ -756,7 +751,6 @@ DV.log('Carousel destroy');//TODO
         me.callParent(arguments);
         
         if (me.showFooter){
-//TODO: remove            pageSize = me.getThumbsPerPage() - 1; //zero-based
             //delegating from the thumbnail Ct doesn't reliably detect/fire events; me.thumbCtEl.on({ delegate: '.dvp-carousel-thumb',...
             me.thumbs.each(function(thumb,c,index){
                 thumb.on({
@@ -839,7 +833,6 @@ DV.log('Carousel destroy');//TODO
         }
         
         me.slides.hide();
-        me.texts.hide();
         
         //set the initial slide
         total = me.slides.getCount();
@@ -970,7 +963,6 @@ DV.log('Carousel destroy');//TODO
             fields = me.fieldNames,
             thumbs = me.thumbs, //CompositeElement
             slides = me.slides, //CompositeElement
-            texts = me.texts, //CompositeElement
             oldIndex = me.slideIndex,
             record, lastIndex, item, perPage, newPage;
             
@@ -990,10 +982,6 @@ DV.log('Carousel destroy');//TODO
         if (!initial){
             //hide the current slide
             slides.item(oldIndex).setVisible(false);
-            item = texts.item(oldIndex);
-            if (item){
-                item.setVisible(false);
-            }
             if (me.showFooter){
                 thumbs.removeCls(me.thumbActiveCls);
             }
@@ -1005,10 +993,6 @@ DV.log('Carousel destroy');//TODO
         record = me.model.slides().getAt(newIndex);
         //show the next one
         slides.item(newIndex).setVisible(true,record.get(fields.slide_img_animate));
-        item = texts.item(newIndex);
-        if (item){
-            item.setVisible(true,record.get(fields.slide_text_animate));
-        }
 
         if (me.showFooter){
             item = thumbs.item(newIndex);
