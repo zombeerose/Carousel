@@ -15,7 +15,8 @@ Ext.define('Ext.ux.carousel.example.store.Slide',{
         tag: 'img',
         thumb_text: 'Mountain'
     },{
-        slide_text: 'The winter clearing',
+        //leave the caption off 1 slide to create a gap
+//        slide_text: 'The winter clearing',
         src: 'images/winter.jpg',
         thumb_text: 'Winter'
     },{
