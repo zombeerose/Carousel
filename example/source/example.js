@@ -5,13 +5,13 @@ Ext.onReady(function(){
         slideCount = obj['s'] || 2,
         demoStore = Ext.create('Ext.ux.carousel.example.store.Demo'),
         slideStore = Ext.create('Ext.ux.carousel.example.store.Slide'),
-        config, demoRecord, slideRecord, spec, images, i, html;
+        config, demoRecord, slideRecord, spec, images, i, index, total, html;
     
     function reloadPage(){
         var key = Ext.ComponentQuery.query('combo[name=example]')[0].getValue(),
-            total = Ext.ComponentQuery.query('numberfield[name=slides]')[0].getValue(),
+            slides = Ext.ComponentQuery.query('numberfield[name=slides]')[0].getValue(),
             path = String(window.location.href).replace(window.location.search,''), // get the current page but without any params
-            query = Ext.Object.toQueryString({ x:key, s:total });
+            query = Ext.Object.toQueryString({ x:key, s:slides });
         
         window.location = Ext.String.urlAppend(path,query);
     }
@@ -37,7 +37,6 @@ Ext.onReady(function(){
             'change': reloadPage,
             buffer: 200
         },
-        maxValue: slideStore.getCount(),
         minValue: 0,
         name: 'slides',
         renderTo: 'slide-nbr',
@@ -51,8 +50,13 @@ Ext.onReady(function(){
 
         //some generic example data
         images = [];
+        total = slideStore.getCount();
+        index = 0;
         for (i = 0; i < slideCount; i++){
-            slideRecord = slideStore.getAt(i);
+            //if we run out of available slides, then start repeating
+            if (index > total){ index = 0; }
+            slideRecord = slideStore.getAt(index);
+            index++;
             images.push({
                 slideText: slideRecord.get('slide_text'),
                 src: slideRecord.get('src'),
