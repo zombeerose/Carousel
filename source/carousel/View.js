@@ -1,6 +1,6 @@
 /**
  * 
- * @version 0.5.1
+ * @version 0.6
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
