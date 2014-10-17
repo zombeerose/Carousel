@@ -3,15 +3,14 @@ Ext.onReady(function(){
         obj = Ext.Object.fromQueryString(query),
         key = obj['x'] || null,
         slideCount = obj['s'] || 2,
-        config, demoRecord, slideRecord, demoStore, slideStore, spec, images, i;
-    
-    demoStore = Ext.create('Ext.ux.carousel.example.store.Demo');
-    slideStore = Ext.create('Ext.ux.carousel.example.store.Slide');
+        demoStore = Ext.create('Ext.ux.carousel.example.store.Demo'),
+        slideStore = Ext.create('Ext.ux.carousel.example.store.Slide'),
+        config, demoRecord, slideRecord, spec, images, i, html;
     
     function reloadPage(){
         var key = Ext.ComponentQuery.query('combo[name=example]')[0].getValue(),
             total = Ext.ComponentQuery.query('numberfield[name=slides]')[0].getValue(),
-            path = String(window.location.href).replace(/\?[a-z0-9&=]*/i,''),
+            path = String(window.location.href).replace(window.location.search,''), // get the current page but without any params
             query = Ext.Object.toQueryString({ x:key, s:total });
         
         window.location = Ext.String.urlAppend(path,query);
@@ -47,7 +46,7 @@ Ext.onReady(function(){
     });
     
     if (key){
-        demoRecord = demoStore.findRecord('key',key);
+        demoRecord = demoStore.findRecord('key',key,0,false,false,true); //exact match
         if (!demoRecord){ return; }
 
         //some generic example data
@@ -69,7 +68,8 @@ Ext.onReady(function(){
         };
         Ext.fly('x-container').update(Ext.DomHelper.markup(spec));
         Ext.fly('x-title').update(demoRecord.get('title'));
-        Ext.fly('x-config').update(Ext.encode(demoRecord.get('config')).replace(/,/g,',<br>'));
+        html = Ext.encode(demoRecord.get('config')).replace(/[{]/g,'{<br>&nbsp;').replace(/[}]/g,'<br>}').replace(/,/g,',<br>&nbsp;');
+        Ext.fly('x-config').update(html);
         if (demoRecord.get('description')){
             Ext.fly('x-desc').update(demoRecord.get('description'));
         }

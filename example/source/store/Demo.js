@@ -5,6 +5,16 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         key: 'default',
         title: 'Default configuration',
         config: {
+            autoStart: false,
+            pauseOnHover: true,
+            showFooter: true,
+            showFooterAlways: false,
+            showNavigation: true,
+            showNavigationAlways: false,
+            showThumbnails: false,
+            showThumbnailsAsText: false,
+            showTimer: true,
+            slideInterval: 10
         }
     },{
         key: 'auto',
@@ -18,6 +28,13 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         config: {
             autoStart: true,
             showNavigationAlways: true
+        }
+    },{
+        key: 'nav-off',
+        title: 'Navigation Off',
+        config: {
+            autoStart: true,
+            showNavigation: false
         }
     },{
         key: 'thumb',
@@ -54,6 +71,13 @@ Ext.define('Ext.ux.carousel.example.store.Demo',{
         config: {
             autoStart: true,
             showFooterAlways: true
+        }
+    },{
+        key: 'footer-off',
+        title: 'Footer Off',
+        config: {
+            autoStart: true,
+            showFooter: false
         }
     },{
         key: 'footerthumb',
