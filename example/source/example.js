@@ -54,7 +54,7 @@ Ext.onReady(function(){
         index = 0;
         for (i = 0; i < slideCount; i++){
             //if we run out of available slides, then start repeating
-            if (index > total){ index = 0; }
+            if (index > (total - 1)){ index = 0; }
             slideRecord = slideStore.getAt(index);
             index++;
             images.push({
