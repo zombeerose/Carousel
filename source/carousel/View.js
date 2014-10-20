@@ -411,23 +411,27 @@ Ext.define('Ext.ux.carousel.View',{
      * @return {Number}
      */
     getThumbsPerPage: function(){
-        var thumb, ctWidth, thumbWidth, max;
+        var me = this,
+            thumb, ctWidth, thumbWidth, max;
         
         //check for the cache first
-        if (Ext.isDefined(this._thumbsPerPage)){
-            return this._thumbsPerPage;
+        if (Ext.isDefined(me._thumbsPerPage)){
+            return me._thumbsPerPage;
         }
         
-        thumb = this.thumbs.first();
+        thumb = me.thumbs.first();
         max = 0;
         if (thumb){
             thumbWidth = thumb.getComputedWidth() + thumb.getMargin('lr');
-            ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth();
+            ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth() - me.navPrevThumbEl.getWidth() - me.navNextThumbEl.getWidth();
+            if (ctWidth <= 0){
+                ctWidth = me.getWidth(true) - 32;
+            }
             max = Math.floor(ctWidth / thumbWidth);
         }
         //cache for performance; invalidate the cache if we resize
-        this._thumbsPerPage = max;
-        
+        me._thumbsPerPage = max;
+
         return max;
     },
     
@@ -809,27 +813,22 @@ Ext.define('Ext.ux.carousel.View',{
                 me.footerEl.hide();
             }
             
-            if (me.showThumbnails){
-                me.on({
-                    element: 'navNextThumbEl',
-                    mouseenter: me.onNavMouseOverOut,
-                    mouseleave: me.onNavMouseOverOut,
-                    scope: me
-                });
-                
-                me.on({
-                    element: 'navPrevThumbEl',
-                    mouseenter: me.onNavMouseOverOut,
-                    mouseleave: me.onNavMouseOverOut,
-                    scope: me
-                });
+            me.on({
+                element: 'navNextThumbEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
             
-                me.thumbs.setVisibilityMode(Ext.Element.DISPLAY);
-                me.setPage(me.page, true); //initial
-            } else {
-                me.navNextThumbEl.hide();
-                me.navPrevThumbEl.hide();
-            }
+            me.on({
+                element: 'navPrevThumbEl',
+                mouseenter: me.onNavMouseOverOut,
+                mouseleave: me.onNavMouseOverOut,
+                scope: me
+            });
+        
+            me.thumbs.setVisibilityMode(Ext.Element.DISPLAY);
+            me.setPage(me.page, true); //initial
         }
         
         me.slides.hide();
