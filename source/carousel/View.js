@@ -1,7 +1,5 @@
 /**
  * 
- * @version 0.6
- * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
            width: 600,
