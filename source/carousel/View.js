@@ -423,8 +423,9 @@ Ext.define('Ext.ux.carousel.View',{
             thumbWidth = thumb.getComputedWidth() + thumb.getMargin('lr');
             ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth() - me.navPrevThumbEl.getWidth() - me.navNextThumbEl.getWidth();
             if (ctWidth <= 0){
-                ctWidth = me.getWidth(true) - 32;
+                ctWidth = me.getWidth(true);
             }
+            ctWidth -= 32; // minor buffer
             max = Math.floor(ctWidth / thumbWidth);
         }
         //cache for performance; invalidate the cache if we resize
