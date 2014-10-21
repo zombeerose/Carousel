@@ -91,33 +91,4 @@ Ext.onReady(function(){
     } else {
         Ext.fly('main').hide();
     }
-    
-//    var model = new Ext.ux.carousel.Model();
-//    model.set({ id:1, delay: 20 });
-//    model
-//      .slides()
-//      .add([
-//            { id: 1, carousel_id: 1, image_url: 'images/castle.jpg', txt: 'The fortress of Sir Carousel' },
-//            { id: 2, carousel_id: 1, image_url: 'images/mountain.jpg', txt: 'The greenest mountain' },
-//            { id: 3, carousel_id: 1, image_url: 'images/winter.jpg', txt: 'The winter clearing' },
-//            { id: 4, carousel_id: 1, image_url: 'images/yosemite.jpg', txt: 'The famous national park' }
-//      ]);
-//    Ext.create('Ext.ux.carousel.View',{
-//        autoStart: true,
-//        height: 250,
-//        model: model,
-//        renderTo: 'model',
-//        width: 400
-//    });
-//
-//<!--
-//<div class="cbox">
-//<h2>Model</h2>
-//<div id="model" class="carousel-ct">
-//</div>
-//<pre>
-//model: new Ext.ux.carousel.Model(...)
-//</pre>
-//</div>
-//-->
 });
