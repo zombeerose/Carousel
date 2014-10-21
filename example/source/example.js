@@ -57,6 +57,8 @@ Ext.onReady(function(){
             if (index > (total - 1)){ index = 0; }
             slideRecord = slideStore.getAt(index);
             index++;
+            if (!slideRecord){ continue; }
+            
             images.push({
                 slideText: slideRecord.get('slide_text'),
                 src: slideRecord.get('src'),
