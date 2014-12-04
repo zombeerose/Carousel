@@ -18,6 +18,7 @@ Ext.onReady(function(){
     
     Ext.create('Ext.form.field.ComboBox',{
         displayField: 'title',
+        emptyText: 'Select an example',
         fieldLabel: 'Current Example',
         listeners: {
             'select': reloadPage,
