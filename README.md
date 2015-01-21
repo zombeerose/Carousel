@@ -1,8 +1,8 @@
 Carousel
 ========
 
-A data-driven carousel component for ExtJS 4.1
+A data-driven carousel component for ExtJS 5.0
 
 Demo available [here](http://zombeerose.github.io/Carousel)
 
-Version 0.6
+Version 1.0

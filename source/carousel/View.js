@@ -9,7 +9,7 @@
        });
  */
 Ext.define('Ext.ux.carousel.View',{
-    extend: 'Ext.container.Container',
+    extend: 'Ext.Component',
     alias: 'widget.dvp_carousel',
     requires: [
         'Ext.ux.carousel.Model',
@@ -190,12 +190,12 @@ Ext.define('Ext.ux.carousel.View',{
     timerInterval: Ext.isIE8m ? 1000 : 250,
     /**
      * @cfg {String} timerStrokeColor
-     * The stroke color of the svg path. (@see Ext.draw.Sprite#stroke)
+     * The stroke color of the svg path. (@see Ext.draw.sprite.Path#strokeStyle)
      */
-    timerStrokeColor: '#98E4FF', //DVUSD: #F3892E
+    timerStrokeColor: '#6cacda', //DVUSD: #F3892E
     /**
      * @cfg {Number} timerStrokeWidth
-     * The stroke width of the svg path. (@see Ext.draw.Sprite#stroke-width)
+     * The stroke width of the svg path. (@see Ext.draw.sprite.Path#lineWidth)
      */
     timerStrokeWidth: 2,
     /**
@@ -215,6 +215,14 @@ Ext.define('Ext.ux.carousel.View',{
 //     */
 //    transitionType: 'fade',
     
+    //events
+    /**
+     * @event openurl
+     * Fires when a user clicks a carousel slide that has a url defined.
+     * @param {Ext.ux.carousel.View} this
+     * @param {String} url The url that is linked to the current slide.
+     */
+     
     /**
      * @private
      * @param {Object} config
@@ -284,16 +292,6 @@ Ext.define('Ext.ux.carousel.View',{
         
         me.callParent(); //config is already applied - do NOT pass arguments
         
-        me.addEvents(
-            /**
-             * @event openurl
-             * Fires when a user clicks a carousel slide that has a url defined.
-             * @param {Ext.ux.carousel.View} this
-             * @param {String} url The url that is linked to the current slide.
-             */
-            'openurl'
-        );
-        
         //<debug>
         if (!me.model && !me.sourceEl){
             Ext.Error.raise('A model or sourceEl is required for the carousel');
@@ -308,7 +306,6 @@ Ext.define('Ext.ux.carousel.View',{
         var fields = this.fieldNames;
         
         this.renderTpl = [
-            '{%this.renderContainer(out,values)%}',
             '<div class="dvp-carousel-slide-wrapper">',
                 '<tpl for="slides">',
                 '<div class="dvp-carousel-slide">',
@@ -324,15 +321,15 @@ Ext.define('Ext.ux.carousel.View',{
             '</div>',
             
             '<tpl if="showTimer">',
-                '<div id="{id}-timerEl" class="dvp-carousel-timer"></div>', //uses Ext.draw.Component
+                '<div id="{id}-timerEl" data-ref="timerEl" class="dvp-carousel-timer"></div>', //uses Ext.draw.Component
             '</tpl>',
             
             '<tpl if="showFooter">',
-                '<div id="{id}-footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="showThumbnailsAsText">text-only</tpl>">',
+                '<div id="{id}-footerEl" data-ref="footerEl" class="dvp-carousel-footer footer-<tpl if="showThumbnails">large<tpl else>small</tpl> <tpl if="showThumbnailsAsText">text-only</tpl>">',
                     '<div class="dvp-carousel-thumb-ct',
                         '<tpl if="Ext.supports.CSS3LinearGradient"> dvp-carousel-thumb-ct-pretty</tpl>',
                     '">',
-                    '<div id="{id}-navPrevThumbEl" class="dvp-carousel-thumb-nav-prev"></div>',
+                    '<div id="{id}-navPrevThumbEl" data-ref="navPrevThumbEl" class="dvp-carousel-thumb-nav-prev"></div>',
                     '<tpl for="slides">',
                         '<div class="dvp-carousel-thumb {[xindex === 1 ? "thumb-first" : ""]}{[xindex === xcount ? "thumb-last" : ""]}">',
                             '<div class="dvp-carousel-thumb-inner">',
@@ -348,10 +345,10 @@ Ext.define('Ext.ux.carousel.View',{
                             '</div>',
                         '</div>',
                     '</tpl>',
-                    '<div id="{id}-navNextThumbEl" class="dvp-carousel-thumb-nav-next"></div>',
+                    '<div id="{id}-navNextThumbEl" data-ref="navNextThumbEl" class="dvp-carousel-thumb-nav-next"></div>',
                     '</div>',
                     
-                    '<div id="{id}-hoverEl" class="dvp-carousel-hover">',
+                    '<div id="{id}-hoverEl" data-ref="hoverEl" class="dvp-carousel-hover">',
                         '<div class="dvp-carousel-hover-inner">',
                             '<div class="dvp-carousel-hover-bg"></div>',
                             '<img class="dvp-carousel-hover-fg" src="">',
@@ -364,10 +361,10 @@ Ext.define('Ext.ux.carousel.View',{
             '</tpl>',
             
             '<tpl if="showNavigation">',
-                '<div id="{id}-navEl" class="dvp-carousel-nav-ct">',
-                    '<div id="{id}-navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev"></div>',
+                '<div id="{id}-navEl" data-ref="navEl" class="dvp-carousel-nav-ct">',
+                    '<div id="{id}-navPrevSlideEl" data-ref="navPrevSlideEl" class="dvp-carousel-nav dvp-carousel-nav-prev"></div>',
                     '<div class="dvp-carousel-nav-bg dvp-carousel-nav-prev"></div>',
-                    '<div id="{id}-navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next"></div>',
+                    '<div id="{id}-navNextSlideEl" data-ref="navNextSlideEl" class="dvp-carousel-nav dvp-carousel-nav-next"></div>',
                     '<div class="dvp-carousel-nav-bg dvp-carousel-nav-next"></div>',
                 '</div>',
             '</tpl>'
@@ -420,8 +417,8 @@ Ext.define('Ext.ux.carousel.View',{
         thumb = me.thumbs.first();
         max = 0;
         if (thumb){
-            thumbWidth = thumb.getComputedWidth() + thumb.getMargin('lr');
-            ctWidth = thumb.up('.dvp-carousel-thumb-ct').getWidth() - me.navPrevThumbEl.getWidth() - me.navNextThumbEl.getWidth();
+            thumbWidth = thumb.getWidth() + thumb.getMargin('lr');
+            ctWidth = me.footerEl.getWidth() - me.navPrevThumbEl.getWidth() - me.navNextThumbEl.getWidth();
             if (ctWidth <= 0){
                 ctWidth = me.getWidth(true);
             }
@@ -493,7 +490,7 @@ Ext.define('Ext.ux.carousel.View',{
         slideStore = me.model.slides();
         slideStore.sort(me.fieldNames.slide_order,'ASC');
         
-        return Ext.applyIf(me.callParent(arguments), {
+        return Ext.applyIf(me.callParent(), {
             height: me.height,
             isHorizontalNav: (me.navigationOrientation === 'h'),
             showFooter: me.showFooter,
@@ -855,11 +852,8 @@ Ext.define('Ext.ux.carousel.View',{
         var me = this,
             total = (me.slideInterval * 1000) / me.timerInterval,
             remainder = ++me.timerCnt % total, //NOTE the counter is incremented
-            surface,
-            sprite,
-            half,
-            radius,
-            strokeWidth = me.timerStrokeWidth;
+            strokeWidth = me.timerStrokeWidth,
+            surface, sprite, half, radius;
         
         if (me.showTimer){
             surface = me.draw.surface; //Ext.draw.Surface
@@ -874,8 +868,9 @@ Ext.define('Ext.ux.carousel.View',{
                 sprite = surface.add({
                     type: 'path',
                     path: me.getTimerPath(remainder+1,total,radius,[half,half]),
-                    stroke: me.timerStrokeColor,
-                    "stroke-width": me.timerStrokeWidth
+                    fill: me.timerStrokeColor, //BUG: fill is supposed to be an alias for fillStyle but fillStyle doesn't have any effect
+                    fillStyle: me.timerStrokeColor,
+                    lineWidth: strokeWidth
                 });
                 sprite.show(true);
                 

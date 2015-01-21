@@ -14,13 +14,13 @@ Ext.define('Ext.ux.carousel.Model', {
     },
     
     fields: [
-        {name: 'id', defaultValue: null, type: 'int', useNull:true},
+        {name: 'id', defaultValue: null, type: 'int', allowNull:true},
         {name: 'delay', type: 'int', defaultValue: 10},
         {name: 'name', type: 'string', defaultValue: null}
     ],
     
-    validations: [
-        {name: 'delay', type: 'presence'},
-        {name: 'name', type: 'length', min: 1, max: 255}
-    ]
+    validators: [{
+        delay: 'presence',
+        name: {type: 'length', min: 1, max: 255}
+    }]
 }); //eo class
