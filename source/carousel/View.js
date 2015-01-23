@@ -1,4 +1,6 @@
 /**
+ * NOTE: The CDN charting/draw library is NOT really from 5.0.1 - it's 4x - 
+ * and therefore does NOT match the code.
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
@@ -768,7 +770,7 @@ Ext.define('Ext.ux.carousel.View',{
         
         if (me.showTimer){
             me.draw = Ext.create('Ext.draw.Component',{
-//                viewBox: false,
+                viewBox: false, //we control the scale & position so disable this: http://docs.sencha.com/extjs/4.2.2/#!/api/Ext.draw.Component-cfg-viewBox
                 width: me.timerSize,
                 height: me.timerSize,
                 renderTo: me.timerEl
@@ -868,12 +870,12 @@ Ext.define('Ext.ux.carousel.View',{
                 sprite = surface.add({
                     type: 'path',
                     path: me.getTimerPath(remainder+1,total,radius,[half,half]),
-                    fill: me.timerStrokeColor, //BUG: fill is supposed to be an alias for fillStyle but fillStyle doesn't have any effect
-                    fillStyle: me.timerStrokeColor,
-                    lineWidth: strokeWidth
+                    fill: me.timerStrokeColor, //TODO: Ext 5.1 replace with fillStyle
+                    "stroke-width": strokeWidth //TODO: Ext 5.1 replaced with lineWidth
                 });
-                sprite.show(true);
-                
+//                sprite.show(true); //true to force redraw
+                sprite.redraw();
+//                
                 Ext.resumeLayouts(true);
             }
         }
