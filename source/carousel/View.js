@@ -189,7 +189,7 @@ Ext.define('Ext.ux.carousel.View',{
      * @cfg {Number} timerInterval
      * The amount of time in milliseconds for running the timer update task.
      */
-    timerInterval: Ext.isIE8m ? 1000 : 250,
+    timerInterval: (Ext.browser.is.IE && Ext.browser.version.ltEq("8")) ? 1000 : 250,
     /**
      * @cfg {String} timerStrokeColor
      * The stroke color of the svg path. (@see Ext.draw.sprite.Path#strokeStyle)
