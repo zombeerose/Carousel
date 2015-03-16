@@ -86,10 +86,6 @@ Ext.define('Ext.ux.carousel.View',{
      */
     navigationOrientation: 'h',
     /**
-     * @cfg {String} navigationOverCls
-     */
-    navigationOverCls: 'dvp-carousel-nav-over',
-    /**
      * @cfg {Boolean} pauseOnHover
      * The default of true will pause the current timer/rotation on the current slide if the carousel is running.
      */
@@ -194,7 +190,7 @@ Ext.define('Ext.ux.carousel.View',{
      * @cfg {String} timerStrokeColor
      * The stroke color of the svg path. (@see Ext.draw.sprite.Path#strokeStyle)
      */
-    timerStrokeColor: '#6cacda', //DVUSD: #F3892E
+    timerStrokeColor: '#015441',
     /**
      * @cfg {Number} timerStrokeWidth
      * The stroke width of the svg path. (@see Ext.draw.sprite.Path#lineWidth)

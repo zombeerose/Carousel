@@ -2,7 +2,7 @@
  * The CSS specific to the banner rotating component.
  */
 .dvp-carousel {
-    border: 1px solid #D7D7D7;
+    border: 1px solid #F9F8F3;
     max-width: 610px !important;
     min-width: 340px !important;
     position: relative;
@@ -81,39 +81,41 @@
 }
 
 .dvp-carousel .dvp-carousel-thumb-ct-pretty {
-    background-color: #D7D2D2;
+    background-color: #EEEBDA;
     /* experimental */
     /* 98E4FF */
-    background-image: -moz-linear-gradient(0deg, #F0F0F0, #D7D7D7);
-    background-image: -ms-linear-gradient(0deg, #F0F0F0, #D7D7D7);
-    background-image: -o-linear-gradient(0deg, #F0F0F0, #D7D7D7);
-    background-image: -webkit-linear-gradient(0deg, #F0F0F0, #D7D7D7); 
-    background-image: linear-gradient(0deg, #F0F0F0, #D7D7D7);
+    background-image: -moz-linear-gradient(0deg, #FFFFFF, #EEEBDA);
+    background-image: -ms-linear-gradient(0deg, #FFFFFF, #EEEBDA);
+    background-image: -o-linear-gradient(0deg, #FFFFFF, #EEEBDA);
+    background-image: -webkit-linear-gradient(0deg, #FFFFFF, #EEEBDA); 
+    background-image: linear-gradient(0deg, #FFFFFF, #EEEBDA);
 }
 
 .dvp-carousel .dvp-carousel-thumb-nav-prev,
 .dvp-carousel .dvp-carousel-thumb-nav-next {
-    background-image: url(../images/carousel/nav-sprite.png);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent; 
     cursor: pointer;
     display: inline-block;
-    height: 16px;
-    width: 12px;
+    height: 0; 
+    width: 0; 
 }
 
 .dvp-carousel .dvp-carousel-thumb-nav-prev {
-    background-position: -36px -8px;
+    border-right: 5px solid #484848; 
+    left: 0;
 }
 
 .dvp-carousel .dvp-carousel-thumb-nav-prev-over {
-    background-position: -68px -8px;
+    border-right-color: #ED7700;
 }
 
 .dvp-carousel .dvp-carousel-thumb-nav-next {
-    background-position: -48px -40px;
+    border-left: 5px solid #484848; 
 }
 
 .dvp-carousel .dvp-carousel-thumb-nav-next-over {
-    background-position: -80px -40px;
+    border-left-color: #ED7700;
 }
 
 .dvp-carousel .dvp-carousel-thumb,
@@ -213,13 +215,11 @@
 }
 
 .dvp-carousel .footer-large .dvp-carousel-thumb-active .dvp-carousel-thumb-bg {
-    background-color: #AAA;
+    background-color: #CEC6BE;
 }
 
 .dvp-carousel .footer-large .dvp-carousel-thumb-over .dvp-carousel-thumb-bg {
-    background-color: #98E4FF !important;
-    filter: alpha(opacity=50);
-    opacity: .5;
+    background-color: #424242 !important;
 }
 
 /* ----- HOVER ----- */
@@ -233,7 +233,7 @@
 /* -------------------------------------- */
 .dvp-carousel .dvp-carousel-text,
 .dvp-carousel .dvp-carousel-text-bg {
-    color: #EEE;
+    color: #F9F8F3;
     font-size: large;
     padding: 10px 25px;
     position: absolute;
@@ -241,7 +241,7 @@
 }
 
 .dvp-carousel .dvp-carousel-text-bg {
-    background-color: #000;
+    background-color: #636361;
     color: transparent;
     /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99333333, endColorstr=#99DDDDDD); /* IE8 and earlier */
     /* These three lines are for transparency in all browsers. */
@@ -322,44 +322,42 @@
 .dvp-carousel .dvp-carousel-nav,
 .dvp-carousel .dvp-carousel-nav-bg {
     cursor: pointer;
-    height: 32px;
     margin: 5px;
     position: absolute;
-    width: 32px;
 }
 
 .dvp-carousel .dvp-carousel-nav {
-    background-image: url(../images/carousel/nav-sprite.png);
     z-index: 100;
 }
 
 .dvp-carousel .dvp-carousel-nav-bg {
-    background-color: #000;
-    color: transparent;
-    /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99333333, endColorstr=#99DDDDDD); /* IE8 and earlier */
-    /* These three lines are for transparency in all browsers. */
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-    filter: alpha(opacity=40);
-    opacity:.4;
     z-index: 1;
 }
 
+.dvp-carousel .dvp-carousel-nav-prev,
+.dvp-carousel .dvp-carousel-nav-next {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    height: 0; 
+    width: 0; 
+}
+
 .dvp-carousel .dvp-carousel-nav-prev {
-    background-position: -32px 0px;
+    border-right: 10px solid #484848; 
     left: 0;
 }
 
 .dvp-carousel .dvp-carousel-nav-prev-over {
-    background-position: 0px 0px;
+    border-right-color: #ED7700;
 }
 
 .dvp-carousel .dvp-carousel-nav-next {
-    background-position: -32px -32px;
+    border-left: 10px solid #484848; 
     right: 0;
 }
 
 .dvp-carousel .dvp-carousel-nav-next-over {
-    background-position: 0px -32px;
+    border-left-color: #ED7700;
 }
 
 /* OLD */
