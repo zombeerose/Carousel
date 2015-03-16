@@ -14,7 +14,7 @@ Ext.define('Ext.ux.carousel.Model', {
     },
     
     fields: [
-        {name: 'id', defaultValue: null, type: 'int', allowNull:true},
+        {name: 'id', defaultValue: null, allowNull:true},
         {name: 'delay', type: 'int', defaultValue: 10},
         {name: 'name', type: 'string', defaultValue: null}
     ],
