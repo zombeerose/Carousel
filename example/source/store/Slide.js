@@ -10,6 +10,14 @@ Ext.define('Ext.ux.carousel.example.store.Slide',{
         src: 'resources/images/castle.jpg',
         thumb_text: 'Fortress'
     },{
+        slide_text: 'Tall water drop picture',
+        src: 'resources/images/tall.jpg',
+        thumb_text: 'Tall'
+    },{
+        slide_text: 'Wide landscape picture',
+        src: 'resources/images/wide.jpg',
+        thumb_text: 'Wide'
+    },{
         slide_text: 'The greenest mountain',
         src: 'resources/images/mountain.jpg',
         tag: 'img',

@@ -15,16 +15,23 @@
     cursor: pointer;
     cursor: alias;
     height: 100%;
+    overflow-x: hidden;
     position: absolute;
     top: 0;
     width: 100%;
     z-index: 0;
 }
 
-.dvp-carousel .dvp-carousel-slide-wrapper,
-.dvp-carousel .dvp-carousel-slide img {
+.dvp-carousel .dvp-carousel-slide-wrapper {
+    background-color: black;
     height: 100%;
     width: 100%;
+}
+.dvp-carousel .dvp-carousel-slide img {
+    display: block;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* -------------------------------------- */
