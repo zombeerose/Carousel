@@ -29,9 +29,10 @@
 }
 .dvp-carousel .dvp-carousel-slide img {
     display: block;
-    height: 100%;
     margin-left: auto;
     margin-right: auto;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 /* -------------------------------------- */
