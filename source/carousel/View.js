@@ -87,6 +87,11 @@ Ext.define('Ext.ux.carousel.View',{
      */
     navigationOrientation: 'h',
     /**
+     * @cfg {Boolean} noCache
+     * Disable caching by adding a unique parameter name to the image urls.  Set to false to allow caching. 
+     */
+    noCache: true,
+    /**
      * @cfg {Boolean} pauseOnHover
      * The default of true will pause the current timer/rotation on the current slide if the carousel is running.
      */
@@ -303,7 +308,8 @@ Ext.define('Ext.ux.carousel.View',{
      * @private
      */
     buildRenderTpl: function(){
-        var fields = this.fieldNames;
+        var fields = this.fieldNames,
+            dc = new Date().getTime();
         
         this.renderTpl = [
             '<div class="dvp-carousel-slide-wrapper">',
@@ -314,7 +320,7 @@ Ext.define('Ext.ux.carousel.View',{
                     '<div class="dvp-carousel-text-bg dvp-carousel-text-{', fields.slide_text_pos, '}">{', fields.slide_text, '}</div>',
                     '</tpl>',
                     '<tpl if="', fields.slide_img_url, '">',
-                    '<img src="{', fields.slide_img_url, '}" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}" style="{', fields.slide_img_style, '}">',
+                    '<img src="{', fields.slide_img_url, '}<tpl if="parent.noCache">?_dc=',dc,'</tpl>" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}" style="{', fields.slide_img_style, '}">',
                     '</tpl>',
                 '</div>',
                 '</tpl>',
@@ -335,7 +341,7 @@ Ext.define('Ext.ux.carousel.View',{
                             '<div class="dvp-carousel-thumb-inner">',
                                 '<div class="dvp-carousel-thumb-bg"></div>',
                                 '<tpl if="parent.showThumbnails">',
-                                    '<img class="dvp-carousel-thumb-fg" src="{', fields.slide_img_url, '}" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
+                                    '<img class="dvp-carousel-thumb-fg" src="{', fields.slide_img_url, '}<tpl if="parent.noCache">?_dc=',dc,'</tpl>" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
                                     '<tpl if="', fields.slide_text_thumb, '">',
                                         '<div class="dvp-carousel-thumb-text">{', fields.slide_text_thumb, '}</div>',
                                     '</tpl>',
@@ -493,6 +499,7 @@ Ext.define('Ext.ux.carousel.View',{
         return Ext.applyIf(me.callParent(), {
             height: me.height,
             isHorizontalNav: (me.navigationOrientation === 'h'),
+            noCache: me.noCache,
             showFooter: me.showFooter,
             showNavigation: me.showNavigation,
             showThumbnails: me.showThumbnails,
