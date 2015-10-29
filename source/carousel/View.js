@@ -450,14 +450,10 @@ Ext.define('Ext.ux.carousel.View',{
     getTimerPath: function(value, total, R, center) {
 //    getTimerPath = function(value, total, R, center){
         var alpha,
-            D = R * 2,
+//            D = R * 2,
             centerX = center[0], 
             centerY = center[1],
-            a,
-            x,
-            y,
-            path,
-            isLargeArc;
+            a, x, y, path, isLargeArc;
             
         if (total === value) {
             value = value - .01;
@@ -520,8 +516,7 @@ Ext.define('Ext.ux.carousel.View',{
             model = Ext.create('Ext.ux.carousel.Model'),
             models = [],
             carouselId = 1, //the carousel.id is irrelevant when loaded from markup
-            slideId,
-            images;
+            slideId, images;
             
         if (!el){
             //<debug>
@@ -589,10 +584,7 @@ Ext.define('Ext.ux.carousel.View',{
     
     onContainerClick: function(e, t){
         var me = this,
-            target,
-            index,
-            record,
-            url;
+            target, index, record, url;
             
         if (target = e.getTarget('.dvp-carousel-thumb')){
             index = me.thumbs.indexOf(target);
@@ -675,11 +667,7 @@ Ext.define('Ext.ux.carousel.View',{
     onCrumbMouseOver: function(e, t){
         var me = this,
             thumb = e.getTarget('.dvp-carousel-thumb',10,true), //Ext.get(t),
-            img,
-            index,
-            record,
-            xy,
-            src;
+            img, index, record, xy, src;
             
         thumb.addCls(me.thumbOverCls);
         
