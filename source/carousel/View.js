@@ -314,7 +314,7 @@ Ext.define('Ext.ux.carousel.View',{
         this.renderTpl = [
             '<div class="dvp-carousel-slide-wrapper">',
                 '<tpl for="slides">',
-                '<div class="dvp-carousel-slide">',
+                '<div class="dvp-carousel-slide<tpl if="', fields.slide_link_url, '"> dvp-carousel-slide-linked</tpl>">',
                     '<tpl if="', fields.slide_text, '">',
                     '<div class="dvp-carousel-text dvp-carousel-text-{', fields.slide_text_pos, '}" style="{', fields.slide_text_style, '}">{', fields.slide_text, '}</div>',
                     '<div class="dvp-carousel-text-bg dvp-carousel-text-{', fields.slide_text_pos, '}">{', fields.slide_text, '}</div>',

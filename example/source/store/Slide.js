@@ -10,7 +10,8 @@ Ext.define('Ext.ux.carousel.example.store.Slide',{
         src: 'resources/images/castle.jpg',
         thumb_text: 'Fortress'
     },{
-        slide_text: 'Tall water drop picture',
+        link_url: 'https://www.google.com/#safe=strict&q=water+drop',
+        slide_text: 'Tall water drop picture (linked)',
         src: 'resources/images/tall.jpg',
         thumb_text: 'Tall'
     },{
@@ -20,7 +21,6 @@ Ext.define('Ext.ux.carousel.example.store.Slide',{
     },{
         slide_text: 'The greenest mountain',
         src: 'resources/images/mountain.jpg',
-        tag: 'img',
         thumb_text: 'Mountain'
     },{
         //leave the caption off 1 slide to create a gap
@@ -28,7 +28,8 @@ Ext.define('Ext.ux.carousel.example.store.Slide',{
         src: 'resources/images/winter.jpg',
         thumb_text: 'Winter'
     },{
-        slide_text: 'The famous national park',
+        link_url: 'https://www.google.com/#safe=strict&q=yosemite',
+        slide_text: 'The famous national park (linked)',
         src: 'resources/images/yosemite.jpg',
         thumb_text: 'Yosemite'
     },{

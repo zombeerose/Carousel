@@ -62,6 +62,7 @@ Ext.onReady(function(){
             
             images.push({
                 slideText: slideRecord.get('slide_text'),
+                slideUrl: slideRecord.get('link_url'),
                 src: slideRecord.get('src'),
                 tag: 'img',
                 thumbText: slideRecord.get('thumb_text')
@@ -83,6 +84,11 @@ Ext.onReady(function(){
         
         config = Ext.apply({
             height: 250,
+            listeners: {
+                openurl: function(cmp,url){
+                    window.open(url);
+                }
+            },
             sourceEl: 'x-container',
             slides: 10,
             width: 400
