@@ -1,6 +1,5 @@
 /**
- * NOTE: The CDN charting/draw library is NOT really from 5.0.1 - it's 4x - 
- * and therefore does NOT match the code.
+ * Compatible with Ext 5.1
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
@@ -762,8 +761,11 @@ Ext.define('Ext.ux.carousel.View',{
         }
         
         if (me.showTimer){
-            me.draw = Ext.create('Ext.draw.Component',{
-                viewBox: false, //we control the scale & position so disable this: http://docs.sencha.com/extjs/4.2.2/#!/api/Ext.draw.Component-cfg-viewBox
+            me.draw = Ext.create('Ext.draw.Container',{
+                bodyStyle: {
+                    backgroundColor: 'transparent'
+                },
+                border: false,
                 width: me.timerSize,
                 height: me.timerSize,
                 renderTo: me.timerEl
@@ -848,27 +850,26 @@ Ext.define('Ext.ux.carousel.View',{
             total = (me.slideInterval * 1000) / me.timerInterval,
             remainder = ++me.timerCnt % total, //NOTE the counter is incremented
             strokeWidth = me.timerStrokeWidth,
-            surface, sprite, half, radius;
+            draw = me.draw,
+            half, radius;
         
         if (me.showTimer){
-            surface = me.draw.surface; //Ext.draw.Surface
-        
             if (remainder !== 0){
                 half = me.timerSize / 2;
                 radius = half - strokeWidth; //reduce the radius by the stroke to prevent cropping
                 
                 Ext.suspendLayouts();
                 
-                surface.removeAll(true);
-                sprite = surface.add({
+                draw.removeAll(true);
+                draw.setSprites([{
                     type: 'path',
                     path: me.getTimerPath(remainder+1,total,radius,[half,half]),
-                    fill: me.timerStrokeColor, //TODO: Ext 5.1 replace with fillStyle
-                    "stroke-width": strokeWidth //TODO: Ext 5.1 replaced with lineWidth
-                });
-//                sprite.show(true); //true to force redraw
-                sprite.redraw();
-//                
+                    fillStyle: me.timerStrokeColor,
+                    lineWidth: strokeWidth
+                }]);
+                //render all surfaces
+                draw.renderFrame();
+                
                 Ext.resumeLayouts(true);
             }
         }
@@ -974,7 +975,7 @@ Ext.define('Ext.ux.carousel.View',{
                 thumbs.removeCls(me.thumbActiveCls);
             }
             if (me.showTimer){
-                me.draw.surface.removeAll(true);
+                me.draw.removeAll(true);
             }
         }
 
