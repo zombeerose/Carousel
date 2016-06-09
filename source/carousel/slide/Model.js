@@ -7,6 +7,11 @@
  */
 Ext.define('Ext.ux.carousel.slide.Model', {
     extend: 'Ext.data.Model',
+    requires: [
+        //data validation classes are not auto-detected during the build by Sencha Cmd so we must explicitly require them.
+        'Ext.data.validator.Length',
+        'Ext.data.validator.Presence'
+    ],
     
     fields: [
         {name: 'id', defaultValue: null, type: 'int', allowNull:true},
