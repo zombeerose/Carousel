@@ -740,7 +740,7 @@ Ext.define('Ext.ux.carousel.View',{
     // @inheritdoc
     onRender: function(){ //onRender
         var me = this,
-            startIndex;
+            total, startIndex;
         
         me.callParent(arguments);
         
