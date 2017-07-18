@@ -766,6 +766,7 @@ Ext.define('Ext.ux.carousel.View',{
                     backgroundColor: 'transparent'
                 },
                 border: false,
+                downloadServerUrl: 'none', //http://docs.sencha.com/extjs/6.5.0/classic/Ext.draw.Container.html#method-download
                 width: me.timerSize,
                 height: me.timerSize,
                 renderTo: me.timerEl
