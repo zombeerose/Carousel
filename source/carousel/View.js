@@ -715,7 +715,7 @@ Ext.define('Ext.ux.carousel.View',{
     
     /**
      * @private
-     * @param {Ext.EventObject} e
+     * @param {Ext.event.Event} e
      * @param {HTMLElement} t
      */
     onNavMouseOverOut: function(e, t){
