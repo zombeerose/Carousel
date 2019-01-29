@@ -83,6 +83,7 @@ Ext.onReady(function(){
         }
         
         config = Ext.apply({
+            // height: '100%',
             height: 250,
             listeners: {
                 openurl: function(cmp,url){
@@ -91,6 +92,7 @@ Ext.onReady(function(){
             },
             sourceEl: 'x-container',
             slides: 10,
+            // width: '100%'
             width: 400
         }, demoRecord.get('config') || {});
         

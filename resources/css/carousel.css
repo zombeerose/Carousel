@@ -3,8 +3,8 @@
  */
 .dvp-carousel {
     border: 1px solid #F9F8F3;
-    max-width: 610px !important;
-    min-width: 340px !important;
+    /*max-width: 610px !important;*/
+    /*min-width: 340px !important;*/
     position: relative;
 }
 
@@ -316,8 +316,8 @@
 /* -------------------------------------- */
 .dvp-carousel .dvp-carousel-timer {
     position: absolute;
-    right: 5px;
-    top: 5px;
+    left: 0;
+    top: -2px;
     z-index: 1;
 }
 
