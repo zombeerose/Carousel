@@ -1,5 +1,5 @@
 /**
- * Compatible with Ext 5.1
+ * Compatible with Ext 6 
  * 
  * @example
        Ext.create('Ext.ux.carousel.View',{
