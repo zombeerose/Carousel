@@ -195,18 +195,13 @@ Ext.define('Ext.ux.carousel.View',{
      * @cfg {String} timerStrokeColor
      * The stroke color of the svg path. (@see Ext.draw.sprite.Path#strokeStyle)
      */
-    timerStrokeColor: '#015441',
+    timerStrokeColor: '#99bce8',
     /**
      * @cfg {Number} timerStrokeWidth
      * The stroke width of the svg path. (@see Ext.draw.sprite.Path#lineWidth)
      */
-    timerStrokeWidth: 2,
-    /**
-     * @cfg {Number} timerSize
-     * The width & height of the timer draw component.
-     */
-    timerSize: 20,
-    
+    timerStrokeWidth: 3,
+
 //    /**
 //     * @cfg {Object} transitionOptions
 //     * Additional config options that are applied to the element animation when transitioning between slides.
@@ -767,8 +762,8 @@ Ext.define('Ext.ux.carousel.View',{
                 },
                 border: false,
                 downloadServerUrl: 'none', //http://docs.sencha.com/extjs/6.5.0/classic/Ext.draw.Container.html#method-download
-                width: me.timerSize,
-                height: me.timerSize,
+                width: me.getWidth(),
+                height: 10, //must be at least 8px
                 renderTo: me.timerEl
             });
         }
@@ -850,31 +845,38 @@ Ext.define('Ext.ux.carousel.View',{
         var me = this,
             total = (me.slideInterval * 1000) / me.timerInterval,
             remainder = ++me.timerCnt % total, //NOTE the counter is incremented
-            strokeWidth = me.timerStrokeWidth,
+            // strokeWidth = me.timerStrokeWidth,
             draw = me.draw,
-            half, radius;
-        
+            // half, radius,
+            distance;
+
         if (me.showTimer){
             if (remainder !== 0){
-                half = me.timerSize / 2;
-                radius = half - strokeWidth; //reduce the radius by the stroke to prevent cropping
-                
+                // half = me.timerSize / 2;
+                // radius = half - strokeWidth; //reduce the radius by the stroke to prevent cropping
+                distance = parseInt(me.getWidth() * ((remainder + .75) / total), 10); //always include radix);
+
                 Ext.suspendLayouts();
-                
+
                 draw.removeAll(true);
                 draw.setSprites([{
-                    type: 'path',
-                    path: me.getTimerPath(remainder+1,total,radius,[half,half]),
-                    fillStyle: me.timerStrokeColor,
-                    lineWidth: strokeWidth
+                    // type: 'path',
+                    // path: me.getTimerPath(remainder+1,total,radius,[half,half]),
+                    type: 'line',
+                    fromX: 0,
+                    fromY: 0,
+                    toX: distance,
+                    toY: 0,
+                    strokeStyle: me.timerStrokeColor,
+                    lineWidth: me.timerStrokeWidth //strokeWidth
                 }]);
                 //render all surfaces
                 draw.renderFrame();
-                
+
                 Ext.resumeLayouts(true);
             }
         }
-        
+
         if (remainder === 0){
             me.next();
         }
@@ -1004,15 +1006,17 @@ Ext.define('Ext.ux.carousel.View',{
      * Starts running the task.
      */
     start: function(){
-        if (!this.model || !this.model.slides().getCount()){
+        var me = this;
+
+        if (!me.model || !me.model.slides().getCount()){
             //<debug>
-            this.update('Carousel model is empty!');
+            me.update('Carousel model is empty!');
             //</debug>
             return;
         }
-        
-        this.timerTask.start();
-        this.running = true;
+
+        me.timerTask.start();
+        me.running = true;
     },
     
     /**
