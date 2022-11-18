@@ -57,8 +57,9 @@ Ext.define('Ext.ux.carousel.View',{
         slide_text_pos: 'txt_position',
         slide_text_style: 'txt_style',
         slide_text_thumb: 'txt_thumb',
-        slide_link_url: 'link_url'
-        slide_order: 'slide_num'
+        slide_link_url: 'link_url',
+        slide_order: 'slide_num',
+        slide_modified_ts: 'modified_ts'
     }
      * </code></pre>
      * 
@@ -250,7 +251,8 @@ Ext.define('Ext.ux.carousel.View',{
             slide_text_style: 'txt_style',
             slide_text_thumb: 'txt_thumb',
             slide_link_url: 'link_url',
-            slide_order: 'slide_num'
+            slide_order: 'slide_num',
+            slide_modified_ts: 'modified_ts'
         });
         
         me.buildRenderTpl();
@@ -302,8 +304,7 @@ Ext.define('Ext.ux.carousel.View',{
      * @private
      */
     buildRenderTpl: function(){
-        var fields = this.fieldNames,
-            dc = new Date().getTime();
+        var fields = this.fieldNames;
         
         this.renderTpl = [
             '<div class="dvp-carousel-slide-wrapper">',
@@ -314,7 +315,16 @@ Ext.define('Ext.ux.carousel.View',{
                     '<div class="dvp-carousel-text-bg dvp-carousel-text-{', fields.slide_text_pos, '}">{', fields.slide_text, '}</div>',
                     '</tpl>',
                     '<tpl if="', fields.slide_img_url, '">',
-                    '<img src="{', fields.slide_img_url, '}<tpl if="parent.noCache">?_dc=',dc,'</tpl>" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}" style="{', fields.slide_img_style, '}">',
+                    '<img src="{', fields.slide_img_url, '}?_ga=0',
+                        '<tpl if="parent.noCache">',
+                            '&_dc=',
+                            '<tpl if="', fields.slide_modified_ts, '">',
+                                '{[ new Date(values.', fields.slide_modified_ts, ').getTime() ]}',
+                            '<tpl else>',
+                                '{[ new Date().getTime() ]}',
+                            '</tpl>',
+                        '</tpl>" ',
+                        'alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}" style="{', fields.slide_img_style, '}">',
                     '</tpl>',
                 '</div>',
                 '</tpl>',
@@ -335,7 +345,16 @@ Ext.define('Ext.ux.carousel.View',{
                             '<div class="dvp-carousel-thumb-inner">',
                                 '<div class="dvp-carousel-thumb-bg"></div>',
                                 '<tpl if="parent.showThumbnails">',
-                                    '<img class="dvp-carousel-thumb-fg" src="{', fields.slide_img_url, '}<tpl if="parent.noCache">?_dc=',dc,'</tpl>" alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
+                                    '<img class="dvp-carousel-thumb-fg" src="{', fields.slide_img_url, '}?_ga=0',
+                                        '<tpl if="parent.noCache">',
+                                            '&_dc=',
+                                            '<tpl if="', fields.slide_modified_ts, '">',
+                                                '{[ new Date(values.', fields.slide_modified_ts, ').getTime() ]}',
+                                            '<tpl else>',
+                                                '{[ new Date().getTime() ]}',
+                                            '</tpl>',
+                                        '</tpl>" ',
+                                        'alt="{', fields.slide_img_alt, '}" title="{', fields.slide_img_title, '}">',
                                     '<tpl if="', fields.slide_text_thumb, '">',
                                         '<div class="dvp-carousel-thumb-text">{', fields.slide_text_thumb, '}</div>',
                                     '</tpl>',
