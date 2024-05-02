@@ -26,6 +26,7 @@ Ext.define('Ext.ux.carousel.slide.Model', {
         {name: 'txt_thumb', defaultValue: ''},
         {name: 'link_url', defaultValue: null},
         {name: 'slide_num', defaultValue: 0, type: 'int'},
+        //requires custom data field type of "Timestamp"
         {name: 'modified_ts', defaultValue: null, type: 'timestamp'}
     ],
     
